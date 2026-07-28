@@ -1,11 +1,12 @@
 ---
 name: mid
-description: Sets explanation depth to mid (QA2) level for the rest of this session's AUT-onboarding answers.
+description: Sets explanation depth to mid (QA2) level for the rest of this session's AUT-onboarding and PR-review answers.
 disable-model-invocation: true
 ---
 
-From now on in this session, when using the aut-onboarding skill, apply
-QA2-level depth, matching how someone at this stage actually works:
+From now on in this session, when using the aut-onboarding or pr-review
+skill, apply QA2-level depth, matching how someone at this stage
+actually works:
 
 - Define only uncommon or project-specific terms — someone at this stage
   works independently on typical testing duties and needs limited
