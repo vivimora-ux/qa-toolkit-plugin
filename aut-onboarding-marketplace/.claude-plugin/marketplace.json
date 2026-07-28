@@ -1,0 +1,15 @@
+{
+  "name": "aut-onboarding-marketplace",
+  "owner": {
+    "name": "Vivi",
+    "url": "https://github.com/vivimora-ux"
+  },
+  "plugins": [
+    {
+      "name": "aut-onboarding",
+      "source": "./aut-onboarding-plugin",
+      "description": "Helps a QA build fast, robust understanding of a project's basics: summary, architecture, data flow, automation requirements, testing strategy, and rollout plan.",
+      "version": "0.1.0"
+    }
+  ]
+}

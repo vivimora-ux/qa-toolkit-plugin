@@ -1,0 +1,11 @@
+{
+  "name": "aut-onboarding",
+  "version": "0.1.0",
+  "description": "Helps a QA build fast, robust understanding of a project's basics: summary, architecture, data flow, automation requirements, testing strategy, and rollout plan. Includes commands to control depth (junior/mid/senior) and framing (visual/trace/risk).",
+  "author": {
+    "name": "Vivi",
+    "url": "https://github.com/vivimora-ux"
+  },
+  "repository": "https://github.com/vivimora-ux/aut-onboarding-marketplace",
+  "license": "UNLICENSED"
+}
