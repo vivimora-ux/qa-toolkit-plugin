@@ -122,3 +122,43 @@ Read the actual project files, README, docs, and any configuration you
 have access to before answering — don't rely on the project name alone.
 If the person points you at a specific file, PR, or area, focus there
 first and connect it back to the six topics above only where relevant.
+
+## Always writing the result to a file
+
+Every time you answer using this skill, also write (or update) a
+markdown file with the result — automatically, without being asked. This
+is a standing part of using the skill, not an optional extra someone has
+to request.
+
+- **Location** — `docs/onboarding/` at the root of the project being
+  onboarded (the AUT, not this plugin). Create the folder if it doesn't
+  exist yet.
+- **Filename** — `aut-onboarding_<YYYY-MM-DD>.md`, using today's actual
+  date. If that file already exists (e.g. from an earlier answer this
+  same day), update it in place rather than creating a second file for
+  the same day — this skill gets invoked many times in a session, and
+  the file should read as one running document for the day, not one
+  file per exchange. A new day starts a new file, so the folder builds a
+  dated history of onboarding sessions over time.
+- **Required header block** — at the top of the file, before any other
+  content:
+  - The creation date, written out plainly (e.g. `Created: 2026-07-28`).
+  - A "Commands used" section listing the full command transcript so
+    far, in order as actually typed — every `/aut-onboarding` invocation
+    with whatever topic argument was given, plus every skill-level and
+    entry-point command (`/junior`, `/mid`, `/senior`, `/visual`,
+    `/trace`, `/risk`) used at any point. Render each as inline code,
+    e.g. `` `/senior` ``, `` `/risk` ``,
+    `` `/aut-onboarding the payments service` ``. Append to this list
+    (don't rewrite past entries) as more commands are used later in the
+    day.
+- **Body** — the onboarding content covered so far, organized under
+  clear markdown headers matching the seven-topic structure above (only
+  the topics actually covered), so it scans well in an editor like VS
+  Code rather than reading like a chat transcript. Use real `##`/`###`
+  headers, not bolded prose, so the file's outline is visible in an
+  editor's minimap/outline view. When a later answer covers a topic
+  already in the file, update that section rather than duplicating it.
+- After writing or updating the file, mention the path in your reply so
+  the person knows it's there — but don't ask permission first, and
+  don't make the write conditional on them wanting it.

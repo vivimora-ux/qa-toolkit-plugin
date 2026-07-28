@@ -55,6 +55,17 @@ Skill level is self-set and can change any time — it's meant to be
 updated as someone's familiarity with the project grows, not a fixed
 label.
 
+## Saving a session to a file
+
+Every answer is automatically saved (no need to ask) as a dated markdown
+file under `docs/onboarding/` in the project being onboarded, e.g.
+`docs/onboarding/aut-onboarding_2026-07-28.md`. Repeated answers on the
+same day update that same file rather than creating a new one. The file
+leads with the creation date and the full list of commands used to
+generate it, then the onboarding content itself under clear headers —
+easy to skim in an editor like VS Code instead of scrolling back through
+the terminal.
+
 ## Repo layout
 
 ```
