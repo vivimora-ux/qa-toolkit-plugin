@@ -1,11 +1,12 @@
 ---
 name: senior
-description: Sets explanation depth to senior (SQA1/SQA2) level for the rest of this session's AUT-onboarding answers.
+description: Sets explanation depth to senior (SQA1/SQA2) level for the rest of this session's AUT-onboarding and PR-review answers.
 disable-model-invocation: true
 ---
 
-From now on in this session, when using the aut-onboarding skill, apply
-senior-level depth, matching how someone at this stage actually works:
+From now on in this session, when using the aut-onboarding or pr-review
+skill, apply senior-level depth, matching how someone at this stage
+actually works:
 
 - Use precise technical vocabulary without definitions, and skip anything
   inferable from the code itself — someone at this stage can be placed on

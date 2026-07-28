@@ -1,11 +1,12 @@
 ---
 name: junior
-description: Sets explanation depth to junior (QA1) level for the rest of this session's AUT-onboarding answers.
+description: Sets explanation depth to junior (QA1) level for the rest of this session's AUT-onboarding and PR-review answers.
 disable-model-invocation: true
 ---
 
-From now on in this session, when using the aut-onboarding skill, apply
-QA1-level depth, matching how someone at this stage actually works:
+From now on in this session, when using the aut-onboarding or pr-review
+skill, apply QA1-level depth, matching how someone at this stage
+actually works:
 
 - Define terms the first time they're used, and explain *why* something
   matters, not just what it is — someone at this stage is still building
