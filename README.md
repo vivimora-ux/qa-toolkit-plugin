@@ -12,8 +12,8 @@ lens: what changed, what's untested, and what's fragile.
 From inside Claude Code, in the project you want to use it in:
 
 ```
-/plugin marketplace add vivimora-ux/aut-onboarding-marketplace
-/plugin install qa-toolkit@aut-onboarding-marketplace
+/plugin marketplace add vivimora-ux/qa-toolkit-plugin
+/plugin install qa-toolkit@qa-toolkit-plugin
 ```
 
 ## Update
