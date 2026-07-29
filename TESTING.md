@@ -1,6 +1,6 @@
-# Testing guide: `aut-onboarding` and `pr-review`
+# Testing guide: `rs-aut` and `pr-review`
 
-For QA testers verifying the `/aut-onboarding` and `/pr-review` skills,
+For QA testers verifying the `/rs-aut` and `/pr-review` skills,
 and the six shared modifier commands, on a project of your choice.
 
 ## Prerequisites
@@ -13,12 +13,12 @@ and the six shared modifier commands, on a project of your choice.
 
 ```
 /plugin marketplace add vivimora-ux/aut-onboarding-marketplace
-/plugin install aut-onboarding@aut-onboarding-marketplace
+/plugin install qa-toolkit@aut-onboarding-marketplace
 ```
 
 ## What you're testing
 
-- **2 skills**: `/aut-onboarding [topic]`, `/pr-review [PR#|URL|blank]`
+- **2 skills**: `/rs-aut [topic]`, `/pr-review [PR#|URL|blank]`
 - **6 modifier commands**, shared across both skills, in effect for the
   rest of the session once set:
   - Skill level: `/junior`, `/mid`, `/senior`
@@ -30,43 +30,43 @@ your target project.
 ## Test 1 — Defaults (no modifiers set)
 
 ```
-/aut-onboarding help me understand this project
+/rs-aut help me understand this project
 ```
 
 Expect: mid-level depth, a balanced pass (structure → trace → risk),
 and a brief mention that other levels exist. Check that
-`docs/onboarding/aut-onboarding_<today's date>.md` is created in the
+`docs/onboarding/rs-aut_<today's date>.md` is created in the
 target project, with a header block (`Created:`, `Commands used:`) and
 real `##` headers.
 
-## Test 2 — Each modifier individually, on `/aut-onboarding`
+## Test 2 — Each modifier individually, on `/rs-aut`
 
 Run these one at a time, in a fresh session each, to confirm each
 behaves distinctly:
 
 ```
 /junior
-/aut-onboarding the main data flow
+/rs-aut the main data flow
 ```
 
 ```
 /senior
-/aut-onboarding the main data flow
+/rs-aut the main data flow
 ```
 
 ```
 /visual
-/aut-onboarding architecture
+/rs-aut architecture
 ```
 
 ```
 /trace
-/aut-onboarding the main data flow
+/rs-aut the main data flow
 ```
 
 ```
 /risk
-/aut-onboarding testing strategy
+/rs-aut testing strategy
 ```
 
 Expect visibly different tone/framing per command, not just a label
@@ -81,7 +81,7 @@ change:
 
 ```
 /senior /risk
-/aut-onboarding <topic>
+/rs-aut <topic>
 ```
 
 Expect senior vocabulary and risk-first framing combined in the same
@@ -128,11 +128,11 @@ test plan (priority-ordered), and non-functional considerations
 
 After a few runs on the same day:
 
-- Confirm `docs/onboarding/aut-onboarding_<today's date>.md` and
+- Confirm `docs/onboarding/rs-aut_<today's date>.md` and
   `docs/pr-reviews/pr-review_pr<PR#>_<today's date>.md` (or
   `pr-review_<branch>_<today's date>.md`) exist in the *target*
   project, not this plugin repo.
-- Run a second `/aut-onboarding` or `/pr-review` later the same day on
+- Run a second `/rs-aut` or `/pr-review` later the same day on
   the same topic/PR — confirm it **updates** the existing file
   (appends to "Commands used", updates matching sections) rather than
   creating a duplicate file.

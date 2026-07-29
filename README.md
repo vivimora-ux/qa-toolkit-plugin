@@ -1,4 +1,4 @@
-# aut-onboarding
+# qa-toolkit
 
 A Claude Code plugin that helps a QA/QE team member build fast, robust
 understanding of a project's basics: project summary, architecture
@@ -13,7 +13,7 @@ From inside Claude Code, in the project you want to use it in:
 
 ```
 /plugin marketplace add vivimora-ux/aut-onboarding-marketplace
-/plugin install aut-onboarding@aut-onboarding-marketplace
+/plugin install qa-toolkit@aut-onboarding-marketplace
 ```
 
 ## Update
@@ -24,12 +24,12 @@ When the plugin content changes, pull the latest version:
 /plugin marketplace update
 ```
 
-## Usage: project onboarding (`/aut-onboarding`)
+## Usage: project onboarding (`/rs-aut`)
 
 Ask a question about the project, e.g.:
 
 ```
-/aut-onboarding help me understand the checkout flow
+/rs-aut help me understand the checkout flow
 ```
 
 Optionally set how the answer is framed and how deep it goes, before or
@@ -51,7 +51,7 @@ Example:
 
 ```
 /senior /risk
-/aut-onboarding the payments service
+/rs-aut the payments service
 ```
 
 Skill level is self-set and can change any time — it's meant to be
@@ -84,8 +84,8 @@ walk-through, and `/risk` leads with the risk assessment.
 Every answer is automatically saved (no need to ask) as a dated
 markdown file:
 
-- `/aut-onboarding` answers save under `docs/onboarding/` in the project
-  being onboarded, e.g. `docs/onboarding/aut-onboarding_2026-07-28.md`.
+- `/rs-aut` answers save under `docs/onboarding/` in the project
+  being onboarded, e.g. `docs/onboarding/rs-aut_2026-07-28.md`.
 - `/pr-review` answers save under `docs/pr-reviews/`, e.g.
   `docs/pr-reviews/pr-review_pr142_2026-07-28.md` (or
   `pr-review_<branch>_2026-07-28.md` for a local-diff review).
@@ -102,11 +102,11 @@ VS Code instead of scrolling back through the terminal.
 aut-onboarding-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json
-└── aut-onboarding-plugin/
+└── qa-toolkit-plugin/
     ├── .claude-plugin/
     │   └── plugin.json
     ├── skills/
-    │   ├── aut-onboarding/
+    │   ├── rs-aut/
     │   │   └── SKILL.md
     │   └── pr-review/
     │       └── SKILL.md

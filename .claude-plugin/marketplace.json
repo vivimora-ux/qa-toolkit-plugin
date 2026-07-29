@@ -6,8 +6,8 @@
   },
   "plugins": [
     {
-      "name": "aut-onboarding",
-      "source": "./aut-onboarding-plugin",
+      "name": "qa-toolkit",
+      "source": "./qa-toolkit-plugin",
       "description": "Helps a QA build fast, robust understanding of a project's basics, and review pull requests from a testing-risk lens: what changed, what's untested, and what's fragile."
     }
   ]

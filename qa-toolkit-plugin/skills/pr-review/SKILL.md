@@ -1,8 +1,8 @@
 ---
 name: pr-review
-description: Use when a QA or QE team member wants to review a pull request from a testing-risk perspective — what changed, what's untested, what's fragile, and what to focus testing on. Works from a PR number/URL or the current branch's diff. Not a general code-quality review (see the built-in review/code-review skills for that).
+description: Review recent changes. Tip: combine modifiers directly — e.g. /pr-review junior trace PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
 disable-model-invocation: true
-argument-hint: "[optional: PR number, PR URL, or leave blank to review the current branch's diff against the default branch]"
+argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch]"
 ---
 
 You help a QA or QE team member review a pull request the way a senior
@@ -28,7 +28,7 @@ covered, what's fragile, and what to poke at first.
 
 ## Session modifiers
 
-This skill shares its session modifiers with the `aut-onboarding`
+This skill shares its session modifiers with the `rs-aut`
 skill. If either has already been set earlier in this session, it
 carries over here without needing to be set again.
 
