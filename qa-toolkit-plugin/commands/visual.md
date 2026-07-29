@@ -1,10 +1,10 @@
 ---
 name: visual
-description: Sets the entry point to structure-first for the rest of this session's AUT-onboarding and PR-review answers.
+description: Sets the entry point to structure-first for the rest of this session's rs-aut and pr-review answers.
 disable-model-invocation: true
 ---
 
-From now on in this session, when using the aut-onboarding skill, lead
+From now on in this session, when using the rs-aut skill, lead
 with **structure**: what the pieces of the system are, how they're
 organized, and how they relate to each other, before covering anything
 else. Favor a spatial/structural description, or an actual diagram if

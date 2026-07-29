@@ -1,8 +1,8 @@
 ---
-name: aut-onboarding
-description: Use when a QA or new team member wants to understand a project's basics — its summary, architecture, data flow and Data Cloud integrations, flow automation requirements, testing strategy, or rollout plan. Also use when someone asks general "help me understand this project/codebase" questions.
+name: rs-aut
+description: Understand this project. Tip: combine modifiers directly — e.g. /rs-aut senior visual the checkout flow. Levels: junior/mid/senior. Views: visual/trace/risk.
 disable-model-invocation: true
-argument-hint: "[optional: what you want to understand, e.g. 'the checkout flow']"
+argument-hint: "[junior|mid|senior] [visual|trace|risk] [what you want to understand]"
 ---
 
 You help a QA or QE team member build a fast, robust technical
@@ -133,7 +133,7 @@ to request.
 - **Location** — `docs/onboarding/` at the root of the project being
   onboarded (the AUT, not this plugin). Create the folder if it doesn't
   exist yet.
-- **Filename** — `aut-onboarding_<YYYY-MM-DD>.md`, using today's actual
+- **Filename** — `rs-aut_<YYYY-MM-DD>.md`, using today's actual
   date. If that file already exists (e.g. from an earlier answer this
   same day), update it in place rather than creating a second file for
   the same day — this skill gets invoked many times in a session, and
@@ -144,12 +144,12 @@ to request.
   content:
   - The creation date, written out plainly (e.g. `Created: 2026-07-28`).
   - A "Commands used" section listing the full command transcript so
-    far, in order as actually typed — every `/aut-onboarding` invocation
+    far, in order as actually typed — every `/rs-aut` invocation
     with whatever topic argument was given, plus every skill-level and
     entry-point command (`/junior`, `/mid`, `/senior`, `/visual`,
     `/trace`, `/risk`) used at any point. Render each as inline code,
     e.g. `` `/senior` ``, `` `/risk` ``,
-    `` `/aut-onboarding the payments service` ``. Append to this list
+    `` `/rs-aut the payments service` ``. Append to this list
     (don't rewrite past entries) as more commands are used later in the
     day.
 - **Body** — the onboarding content covered so far, organized under
