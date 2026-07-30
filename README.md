@@ -4,7 +4,7 @@ A Claude Code plugin that helps a QA/QE team member build fast, robust
 understanding of a project's basics: project summary, architecture
 overview, data flow and Data Cloud integrations, flow automation
 requirements, testing strategy, and rollout plan. It also includes a
-`pr-review` skill for reviewing a pull request from a testing-risk
+`pr-explainer` skill for reviewing a pull request from a testing-risk
 lens: what changed, what's untested, and what's fragile.
 
 ## Install
@@ -34,7 +34,7 @@ Ask a question about the project, e.g.:
 
 Optionally add modifier arguments to set how the answer is framed and
 how deep it goes. These stay in effect for the rest of the session,
-until changed again — and are shared with the `pr-review` skill below,
+until changed again — and are shared with the `pr-explainer` skill below,
 so setting one carries over to the other:
 
 **Entry point** — how the explanation is framed:
@@ -57,15 +57,15 @@ Skill level is self-set and can change any time — it's meant to be
 updated as someone's familiarity with the project grows, not a fixed
 label.
 
-## Usage: PR review (`/pr-review`)
+## Usage: PR review (`/pr-explainer`)
 
 Review a pull request from a testing-risk lens — what changed, what's
 untested, what's fragile — rather than a general code-quality review:
 
 ```
-/pr-review 142
-/pr-review https://github.com/org/repo/pull/142
-/pr-review
+/pr-explainer 142
+/pr-explainer https://github.com/org/repo/pull/142
+/pr-explainer
 ```
 
 - With a PR number or URL, it uses the GitHub CLI (`gh`) to pull the
@@ -85,9 +85,9 @@ markdown file:
 
 - `/rs-aut` answers save under `docs/onboarding/` in the project
   being onboarded, e.g. `docs/onboarding/rs-aut_2026-07-28.md`.
-- `/pr-review` answers save under `docs/pr-reviews/`, e.g.
-  `docs/pr-reviews/pr-review_pr142_2026-07-28.md` (or
-  `pr-review_<branch>_2026-07-28.md` for a local-diff review).
+- `/pr-explainer` answers save under `docs/pr-explainer/`, e.g.
+  `docs/pr-explainer/pr-explainer_pr142_2026-07-28.md` (or
+  `pr-explainer_<branch>_2026-07-28.md` for a local-diff review).
 
 Repeated answers on the same day, for the same topic/PR/branch, update
 that same file rather than creating a new one. Each file leads with the
@@ -107,7 +107,7 @@ aut-onboarding-marketplace/
     ├── skills/
     │   ├── rs-aut/
     │   │   └── SKILL.md
-    │   └── pr-review/
+    │   └── pr-explainer/
     │       └── SKILL.md
     ├── reference/
     │   └── modifiers.md   # shared junior/mid/senior + visual/trace/risk behavior

@@ -1,8 +1,8 @@
-# Modifiers for `rs-aut` and `pr-review`
+# Modifiers for `rs-aut` and `pr-explainer`
 
 `junior`/`mid`/`senior` and `visual`/`trace`/`risk` are passed as
-arguments to `/rs-aut` or `/pr-review` (e.g.
-`/rs-aut senior risk the checkout flow`, `/pr-review junior trace 142`).
+arguments to `/rs-aut` or `/pr-explainer` (e.g.
+`/rs-aut senior risk the checkout flow`, `/pr-explainer junior trace 142`).
 Once set, a modifier is shared across both skills and stays in effect
 for the rest of the session until a different value in the same
 category is passed again. Never treat a skill-level modifier as a
@@ -67,13 +67,13 @@ are with the area in question. Don't remark on someone "still" using
 - **`visual`** — leads with structure. In `rs-aut`, lead with what the
   pieces of the system are, how they're organized, and how they relate
   to each other — favor a spatial/structural description, or an actual
-  diagram if available, over a narrative walk-through. In `pr-review`,
+  diagram if available, over a narrative walk-through. In `pr-explainer`,
   lead with scope of impact: which files, components, or services the
   change touches, and what part of the application that represents.
 
 - **`trace`** — leads with a step-by-step walk-through. In `rs-aut`,
   follow one concrete path through the system from start to finish, in
-  the order things actually happen. In `pr-review`, walk through the
+  the order things actually happen. In `pr-explainer`, walk through the
   meaningful logic change(s) in the diff, in the order they'd actually
   execute.
 
