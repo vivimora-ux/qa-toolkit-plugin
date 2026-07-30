@@ -1,6 +1,6 @@
 ---
-name: pr-review
-description: Review recent changes. Tip: combine modifiers directly — e.g. /pr-review junior trace PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
+name: pr-explainer
+description: Review recent changes. Tip: combine modifiers directly — e.g. /pr-explainer junior trace PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch]"
 ---
@@ -55,7 +55,7 @@ be analyzed anyway.
 This skill shares its session modifiers with the `rs-aut` skill. Check
 whether a skill-level (`junior`/`mid`/`senior`) or entry-point
 (`visual`/`trace`/`risk`) argument has been passed in this or an earlier
-`/pr-review` or `/rs-aut` invocation this session — if either has
+`/pr-explainer` or `/rs-aut` invocation this session — if either has
 already been set, it carries over here without needing to be set again.
 See `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior
 of each. If no skill level has been set yet, default to `mid` behavior
@@ -64,7 +64,7 @@ point has been set yet, give a short, balanced pass — scope of impact
 first, then a brief code walk-through, then risk — rather than asking a
 clarifying question.
 
-If `/pr-review` is invoked again later in the same session for the
+If `/pr-explainer` is invoked again later in the same session for the
 same PR/branch, and nothing suggests the diff has changed, don't
 re-fetch or re-read it just because a modifier changed. Reuse the
 analysis already produced earlier in the session and re-frame or
@@ -142,12 +142,12 @@ markdown file with the result — automatically, without being asked.
 This is a standing part of using the skill, not an optional extra
 someone has to request.
 
-- **Location** — `docs/pr-reviews/` at the root of the project being
+- **Location** — `docs/pr-explainer/` at the root of the project being
   reviewed (not this plugin). Create the folder if it doesn't exist
   yet.
-- **Filename** — `pr-review_<identifier>_<YYYY-MM-DD>.md`, using
+- **Filename** — `pr-explainer_<identifier>_<YYYY-MM-DD>.md`, using
   today's actual date. `<identifier>` is `pr<number>` when the review
-  is sourced via `gh` (e.g. `pr-review_pr142_2026-07-28.md`), or the
+  is sourced via `gh` (e.g. `pr-explainer_pr142_2026-07-28.md`), or the
   current branch name (sanitized to be filesystem-safe) when sourced
   from a local diff. If that file already exists (e.g. from an earlier
   answer this same day on the same PR/branch), update it in place
@@ -159,7 +159,7 @@ someone has to request.
   - The PR link/number (if sourced via `gh`) or branch name (if a local
     diff).
   - A "Commands used" section listing the full command transcript so
-    far, in order as actually typed — every `/pr-review` invocation
+    far, in order as actually typed — every `/pr-explainer` invocation
     verbatim, including whatever modifier and scope arguments were
     given. Render each as inline code. Append to this list (don't
     rewrite past entries) as more invocations happen later in the day.

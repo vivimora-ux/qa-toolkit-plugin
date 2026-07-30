@@ -1,13 +1,13 @@
-# Testing guide: `rs-aut` and `pr-review`
+# Testing guide: `rs-aut` and `pr-explainer`
 
-For QA testers verifying the `/rs-aut` and `/pr-review` skills, and
+For QA testers verifying the `/rs-aut` and `/pr-explainer` skills, and
 their six shared modifier arguments, on a project of your choice.
 
 ## Prerequisites
 
 - Pick a target project (not this plugin repo) to test in. It should
   have real git history and at least one real PR, or an unmerged local
-  branch with changes — the `pr-review` tests need something to diff
+  branch with changes — the `pr-explainer` tests need something to diff
   against.
 - In that project, install the plugin from inside Claude Code:
 
@@ -18,7 +18,7 @@ their six shared modifier arguments, on a project of your choice.
 
 ## What you're testing
 
-- **2 skills**: `/rs-aut [modifiers] [topic]`, `/pr-review [modifiers] [PR#|URL|blank]`
+- **2 skills**: `/rs-aut [modifiers] [topic]`, `/pr-explainer [modifiers] [PR#|URL|blank]`
 - **6 modifier arguments**, shared across both skills, in effect for the
   rest of the session once set:
   - Skill level: `junior`, `mid`, `senior`
@@ -81,36 +81,36 @@ change:
 Expect senior vocabulary and risk-first framing combined in the same
 answer.
 
-## Test 4 — Modifiers persist and carry over to `/pr-review`
+## Test 4 — Modifiers persist and carry over to `/pr-explainer`
 
 In the *same* session as Test 3 (don't reset), without resetting the
 modifiers, switch skills:
 
 ```
-/pr-review
+/pr-explainer
 ```
 
 Expect it still applies `senior`/`risk` from earlier — risk-led, no
 re-explaining terms — confirming that modifiers are shared across both
 skills.
 
-## Test 5 — `/pr-review` input sources
+## Test 5 — `/pr-explainer` input sources
 
 Run each in its own session (reset modifiers with `/rs-aut mid` first
 if you want a clean baseline):
 
-- `/pr-review <PR#>` — should use `gh pr view` / `gh pr diff`.
-- `/pr-review <PR-URL>` — same, via URL.
-- `/pr-review` with no argument, on a branch with local changes —
+- `/pr-explainer <PR#>` — should use `gh pr view` / `gh pr diff`.
+- `/pr-explainer <PR-URL>` — same, via URL.
+- `/pr-explainer` with no argument, on a branch with local changes —
   should diff against the default branch.
-- `/pr-review` with no argument, on a clean branch with nothing to
+- `/pr-explainer` with no argument, on a clean branch with nothing to
   compare — should say plainly there's nothing to review, not invent
   content.
 - (Optional) simulate `gh` not being authenticated (`gh auth logout`
   temporarily, only in a throwaway/safe environment) — should say so
   plainly and fall back to the local diff instead of failing silently.
 
-## Test 6 — The seven-topic coverage in `/pr-review`
+## Test 6 — The seven-topic coverage in `/pr-explainer`
 
 On one real PR, check the answer actually hits: change summary, scope
 of impact, code walk-through, test coverage (explicitly flagging logic
@@ -123,10 +123,10 @@ test plan (priority-ordered), and non-functional considerations
 After a few runs on the same day:
 
 - Confirm `docs/onboarding/rs-aut_<today's date>.md` and
-  `docs/pr-reviews/pr-review_pr<PR#>_<today's date>.md` (or
-  `pr-review_<branch>_<today's date>.md`) exist in the *target*
+  `docs/pr-explainer/pr-explainer_pr<PR#>_<today's date>.md` (or
+  `pr-explainer_<branch>_<today's date>.md`) exist in the *target*
   project, not this plugin repo.
-- Run a second `/rs-aut` or `/pr-review` later the same day on
+- Run a second `/rs-aut` or `/pr-explainer` later the same day on
   the same topic/PR — confirm it **updates** the existing file
   (appends to "Commands used", updates matching sections) rather than
   creating a duplicate file.
@@ -139,8 +139,8 @@ After a few runs on the same day:
 - [ ] Each of the 6 modifiers produces visibly distinct behavior when
       passed as an argument
 - [ ] Modifiers persist across the session and across both skills
-- [ ] `/pr-review` handles: PR number, PR URL, blank/local diff,
+- [ ] `/pr-explainer` handles: PR number, PR URL, blank/local diff,
       no-`gh`, nothing-to-review
 - [ ] Files are written to the target project's `docs/onboarding/` and
-      `docs/pr-reviews/`, not this repo
+      `docs/pr-explainer/`, not this repo
 - [ ] Same-day reruns update files in place instead of duplicating
