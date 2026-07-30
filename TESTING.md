@@ -1,7 +1,7 @@
 # Testing guide: `rs-aut` and `pr-review`
 
-For QA testers verifying the `/rs-aut` and `/pr-review` skills,
-and the six shared modifier commands, on a project of your choice.
+For QA testers verifying the `/rs-aut` and `/pr-review` skills, and
+their six shared modifier arguments, on a project of your choice.
 
 ## Prerequisites
 
@@ -18,11 +18,11 @@ and the six shared modifier commands, on a project of your choice.
 
 ## What you're testing
 
-- **2 skills**: `/rs-aut [topic]`, `/pr-review [PR#|URL|blank]`
-- **6 modifier commands**, shared across both skills, in effect for the
+- **2 skills**: `/rs-aut [modifiers] [topic]`, `/pr-review [modifiers] [PR#|URL|blank]`
+- **6 modifier arguments**, shared across both skills, in effect for the
   rest of the session once set:
-  - Skill level: `/junior`, `/mid`, `/senior`
-  - Entry point: `/visual`, `/trace`, `/risk`
+  - Skill level: `junior`, `mid`, `senior`
+  - Entry point: `visual`, `trace`, `risk`
 
 Replace `<PR#>`, `<PR-URL>`, and `<topic>` below with real values from
 your target project.
@@ -45,43 +45,37 @@ Run these one at a time, in a fresh session each, to confirm each
 behaves distinctly:
 
 ```
-/junior
-/rs-aut the main data flow
+/rs-aut junior the main data flow
 ```
 
 ```
-/senior
-/rs-aut the main data flow
+/rs-aut senior the main data flow
 ```
 
 ```
-/visual
-/rs-aut architecture
+/rs-aut visual architecture
 ```
 
 ```
-/trace
-/rs-aut the main data flow
+/rs-aut trace the main data flow
 ```
 
 ```
-/risk
-/rs-aut testing strategy
+/rs-aut risk testing strategy
 ```
 
-Expect visibly different tone/framing per command, not just a label
+Expect visibly different tone/framing per modifier, not just a label
 change:
-- `/junior` defines terms and ends with a confirmation-style check-in.
-- `/senior` skips definitions and goes straight to edge cases.
-- `/visual` leads with architecture.
-- `/trace` leads with a step-by-step walk-through.
-- `/risk` leads with fragility/coverage gaps.
+- `junior` defines terms and ends with a confirmation-style check-in.
+- `senior` skips definitions and goes straight to edge cases.
+- `visual` leads with architecture.
+- `trace` leads with a step-by-step walk-through.
+- `risk` leads with fragility/coverage gaps.
 
 ## Test 3 — Combining modifiers, one session
 
 ```
-/senior /risk
-/rs-aut <topic>
+/rs-aut senior risk <topic>
 ```
 
 Expect senior vocabulary and risk-first framing combined in the same
@@ -96,14 +90,14 @@ modifiers, switch skills:
 /pr-review
 ```
 
-Expect it still applies `/senior /risk` from earlier — risk-led, no
+Expect it still applies `senior`/`risk` from earlier — risk-led, no
 re-explaining terms — confirming that modifiers are shared across both
 skills.
 
 ## Test 5 — `/pr-review` input sources
 
-Run each in its own session (reset modifiers with `/mid` first if you
-want a clean baseline):
+Run each in its own session (reset modifiers with `/rs-aut mid` first
+if you want a clean baseline):
 
 - `/pr-review <PR#>` — should use `gh pr view` / `gh pr diff`.
 - `/pr-review <PR-URL>` — same, via URL.
@@ -142,7 +136,8 @@ After a few runs on the same day:
 ## Quick pass/fail checklist
 
 - [ ] Plugin installs cleanly in a separate project
-- [ ] Each of the 6 commands produces visibly distinct behavior
+- [ ] Each of the 6 modifiers produces visibly distinct behavior when
+      passed as an argument
 - [ ] Modifiers persist across the session and across both skills
 - [ ] `/pr-review` handles: PR number, PR URL, blank/local diff,
       no-`gh`, nothing-to-review
