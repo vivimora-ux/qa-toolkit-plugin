@@ -73,6 +73,15 @@ of impact, or adjust vocabulary for `junior` vs `senior`). Only
 re-pull the diff if there's actual reason to think it changed (new
 commits pushed, explicit PR argument again, etc.).
 
+If `/pr-review` is invoked again later in the same session for the
+same PR/branch, and nothing suggests the diff has changed, don't
+re-fetch or re-read it just because a modifier changed. Reuse the
+analysis already produced earlier in the session and re-frame or
+reorder it for the new modifier (e.g. lead with risk instead of scope
+of impact, or adjust vocabulary for `/junior` vs `/senior`). Only
+re-pull the diff if there's actual reason to think it changed (new
+commits pushed, explicit PR argument again, etc.).
+
 ## The seven things to cover
 
 Work through these for the PR or diff under review. Skip a section
