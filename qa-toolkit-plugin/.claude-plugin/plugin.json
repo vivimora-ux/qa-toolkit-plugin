@@ -1,6 +1,6 @@
 {
   "name": "qa-toolkit",
-  "description": "Helps a QA build fast, robust understanding of a project's basics (summary, architecture, data flow, automation requirements, testing strategy, rollout plan) and review pull requests from a testing-risk lens (what changed, what's untested, what's fragile). Includes commands to control depth (junior/mid/senior) and framing (visual/trace/risk), shared across both skills.",
+  "description": "Helps a QA build fast, robust understanding of a project's basics (summary, architecture, data flow, automation requirements, testing strategy, rollout plan) and review pull requests from a testing-risk lens (what changed, what's untested, what's fragile). Supports depth (junior/mid/senior) and framing (visual/trace/risk) modifiers, passed as arguments to either skill.",
   "author": {
     "name": "Vivi",
     "url": "https://github.com/vivimora-ux"

@@ -26,29 +26,52 @@ covered, what's fragile, and what to poke at first.
 4. If there's no diff either way — a clean, up-to-date branch and no PR
    argument — say so directly rather than inventing content to review.
 
+## Keeping large or noisy diffs out of context
+
+Lockfiles and generated files (`package-lock.json`, `yarn.lock`,
+`pnpm-lock.yaml`, `go.sum`, `Cargo.lock`, `*.min.js`, `dist/**`,
+`build/**`, `vendor/**`, and similar) can dwarf the actual change, and
+they aren't reviewed line-by-line anyway — see "The seven things to
+cover" below, which is about logic and test coverage, not dependency
+bumps. Before pulling the full diff:
+
+1. Get the changed-file list first (`gh pr diff --name-only` /
+   `git diff --name-only origin/HEAD...HEAD`, or `--stat` if line
+   counts are useful).
+2. For any path that's a lockfile or generated file, don't pull its
+   full diff content into context. Just note that it changed and by
+   how many lines, from the `--stat`/`--name-only` output.
+3. Pull the full diff only for the remaining files — exclude those
+   paths (e.g. `git diff origin/HEAD...HEAD -- . ':!package-lock.json'
+   ':!yarn.lock'`, or filter the `gh pr diff` output the same way) so
+   their content never enters the transcript.
+
+This keeps a review of a small logic change from bloating the session
+with thousands of lines of dependency churn that were never going to
+be analyzed anyway.
+
 ## Session modifiers
 
-This skill shares its session modifiers with the `rs-aut`
-skill. If either has already been set earlier in this session, it
-carries over here without needing to be set again.
+This skill shares its session modifiers with the `rs-aut` skill. Check
+whether a skill-level (`junior`/`mid`/`senior`) or entry-point
+(`visual`/`trace`/`risk`) argument has been passed in this or an earlier
+`/pr-review` or `/rs-aut` invocation this session — if either has
+already been set, it carries over here without needing to be set again.
+See `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior
+of each. If no skill level has been set yet, default to `mid` behavior
+and mention briefly that a different level is available. If no entry
+point has been set yet, give a short, balanced pass — scope of impact
+first, then a brief code walk-through, then risk — rather than asking a
+clarifying question.
 
-- **Skill level** — `/junior`, `/mid`, `/senior`. If none has been used
-  yet, default to `/mid` behavior and mention briefly that a different
-  level is available.
-- **Entry point** — `/visual`, `/trace`, `/risk`. If none has been used
-  yet, give a short, balanced pass — scope of impact first, then a
-  brief code walk-through, then risk — rather than asking a clarifying
-  question. In this skill specifically:
-  - `/visual` leads with **scope of impact**: which files, components,
-    or services are touched, and what part of the app that represents.
-  - `/trace` leads with a **code walk-through**: the meaningful logic
-    change(s), in the order they'd actually execute.
-  - `/risk` leads with the **risk assessment**: what's fragile, untested,
-    or historically problematic about this area.
-
-Never treat a skill-level command as a permanent label — the same
-person may want a different level on a different PR depending on how
-familiar they are with the area being changed.
+If `/pr-review` is invoked again later in the same session for the
+same PR/branch, and nothing suggests the diff has changed, don't
+re-fetch or re-read it just because a modifier changed. Reuse the
+analysis already produced earlier in the session and re-frame or
+reorder it for the new modifier (e.g. lead with risk instead of scope
+of impact, or adjust vocabulary for `junior` vs `senior`). Only
+re-pull the diff if there's actual reason to think it changed (new
+commits pushed, explicit PR argument again, etc.).
 
 ## The seven things to cover
 
@@ -62,37 +85,25 @@ onto a trivial change.
    diff itself when it isn't.
 2. **Scope of impact** — which files, components, or services are
    touched, and what part of the application that maps to. Under
-   `/visual`, lead with this.
+   `visual`, lead with this.
 3. **Code walk-through** — the meaningful logic change(s), walked
-   through in the order they'd actually execute. Under `/trace`, lead
+   through in the order they'd actually execute. Under `trace`, lead
    with this and follow one concrete path through the change.
 4. **Test coverage** — what tests were added or changed versus what
    logic changed. Call out logic changes with no accompanying test
    changes explicitly; don't let them pass silently.
 5. **Risk assessment** — what's fragile, what depends on this, what's
    broken here before (if that's in loaded project knowledge), and what
-   edge case is easiest to miss. Under `/risk`, lead with this.
+   edge case is easiest to miss. Under `risk`, lead with this.
 6. **Suggested test plan** — concrete manual and/or automated test
    cases a QA should run, ordered by priority (highest-risk first).
+   When the PR introduces a new feature or new functionality (as
+   opposed to a bug fix, refactor, or minor change), give both a
+   manual test plan and automated test case suggestions — not just
+   one or the other.
 7. **Non-functional considerations** — performance, security,
    data/schema/migration impact, rollback safety, and backwards
    compatibility, where relevant to this specific change.
-
-## Skill-level behavior
-
-- **`/junior`** — define terms the first time you use them. Explain
-  *why* something matters for testing, not just what changed. Frame
-  the suggested test plan as concrete next actions. It's fine to end
-  with a small check like "does that match what you'd expect to test
-  here, or does something seem off?"
-- **`/mid`** — define only uncommon or project-specific terms. Call out
-  risk in the change directly when it's visible — ambiguity, missing
-  edge cases, gaps between the PR description and what the diff
-  actually does.
-- **`/senior`** — precise technical vocabulary, no definitions. Skip
-  anything inferable from the diff itself. Frame risk in terms of
-  quality strategy and tradeoffs — where light testing is defensible
-  given the blast radius, versus where full coverage is non-negotiable.
 
 ## Baseline rules
 
@@ -140,11 +151,9 @@ someone has to request.
     diff).
   - A "Commands used" section listing the full command transcript so
     far, in order as actually typed — every `/pr-review` invocation
-    with whatever argument was given, plus every skill-level and
-    entry-point command (`/junior`, `/mid`, `/senior`, `/visual`,
-    `/trace`, `/risk`) used at any point in the session. Render each as
-    inline code. Append to this list (don't rewrite past entries) as
-    more commands are used later in the day.
+    verbatim, including whatever modifier and scope arguments were
+    given. Render each as inline code. Append to this list (don't
+    rewrite past entries) as more invocations happen later in the day.
 - **Body** — the review content covered so far, organized under clear
   markdown headers matching the seven-topic structure above (only the
   topics actually covered), so it scans well in an editor like VS Code

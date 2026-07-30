@@ -32,26 +32,25 @@ Ask a question about the project, e.g.:
 /rs-aut help me understand the checkout flow
 ```
 
-Optionally set how the answer is framed and how deep it goes, before or
-alongside your question. These stay in effect for the rest of the
-session, until changed again — and are shared with the `pr-review`
-skill below, so setting one carries over to the other:
+Optionally add modifier arguments to set how the answer is framed and
+how deep it goes. These stay in effect for the rest of the session,
+until changed again — and are shared with the `pr-review` skill below,
+so setting one carries over to the other:
 
 **Entry point** — how the explanation is framed:
-- `/visual` — lead with structure/architecture
-- `/trace` — lead with a step-by-step walk-through
-- `/risk` — lead with what's fragile or historically problematic
+- `visual` — lead with structure/architecture
+- `trace` — lead with a step-by-step walk-through
+- `risk` — lead with what's fragile or historically problematic
 
 **Skill level** — how much scaffolding is used:
-- `/junior` — define terms, explain why things matter, assume no context
-- `/mid` — default; define only uncommon terms
-- `/senior` — precise vocabulary, no definitions, straight to edge cases
+- `junior` — define terms, explain why things matter, assume no context
+- `mid` — default; define only uncommon terms
+- `senior` — precise vocabulary, no definitions, straight to edge cases
 
 Example:
 
 ```
-/senior /risk
-/rs-aut the payments service
+/rs-aut senior risk the payments service
 ```
 
 Skill level is self-set and can change any time — it's meant to be
@@ -74,10 +73,10 @@ untested, what's fragile — rather than a general code-quality review:
 - With no argument, it reviews the current branch's diff against the
   repo's default branch.
 
-The same `/junior` / `/mid` / `/senior` and `/visual` / `/trace` /
-`/risk` commands from above apply here too — `/visual` leads with the
-files/components touched, `/trace` leads with a step-by-step code
-walk-through, and `/risk` leads with the risk assessment.
+The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
+modifiers from above apply here too — `visual` leads with the
+files/components touched, `trace` leads with a step-by-step code
+walk-through, and `risk` leads with the risk assessment.
 
 ## Saving a session to a file
 
@@ -110,13 +109,8 @@ aut-onboarding-marketplace/
     │   │   └── SKILL.md
     │   └── pr-review/
     │       └── SKILL.md
-    ├── commands/
-    │   ├── visual.md
-    │   ├── trace.md
-    │   ├── risk.md
-    │   ├── junior.md
-    │   ├── mid.md
-    │   └── senior.md
+    ├── reference/
+    │   └── modifiers.md   # shared junior/mid/senior + visual/trace/risk behavior
     └── README.md   (this file)
 ```
 
