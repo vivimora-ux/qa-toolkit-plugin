@@ -1,11 +1,13 @@
 # qa-toolkit
 
 A Claude Code plugin that helps a QA/QE team member build fast, robust
-understanding of a project's basics: project summary, architecture
+understanding of a project's basics — project summary, architecture
 overview, data flow and Data Cloud integrations, flow automation
-requirements, testing strategy, and rollout plan. It also includes a
-`pr-explainer` skill for reviewing a pull request from a testing-risk
-lens: what changed, what's untested, and what's fragile.
+requirements, testing strategy, and rollout plan — via the `rs-aut`
+skill. It also includes a `pr-explainer` skill for reviewing a pull
+request from a testing-risk lens: what changed, what's untested, and
+what's fragile — and a `test-plan` skill that turns that analysis into
+a prioritized manual + automated test plan.
 
 ## Install
 
@@ -78,6 +80,35 @@ modifiers from above apply here too — `visual` leads with the
 files/components touched, `trace` leads with a step-by-step code
 walk-through, and `risk` leads with the risk assessment.
 
+## Usage: test plan (`/test-plan`)
+
+Turn a `pr-explainer` or `rs-aut` doc that's already been produced into a
+concrete, prioritized manual + automated test plan — not a fresh
+re-analysis of the PR or project:
+
+```
+/test-plan 142
+/test-plan the checkout flow
+/test-plan senior risk PR#42
+/test-plan
+```
+
+- With a PR number/link or no argument on a branch with a diff, it's
+  PR-scoped and reads the matching `docs/pr-explainer/` doc.
+- With a feature/area name, or no argument and no diff, it's
+  project-scoped and reads the matching `docs/onboarding/` doc.
+- If neither doc exists yet, it says so and suggests running
+  `/pr-explainer` or `/rs-aut` first rather than analyzing anything from
+  scratch itself.
+
+Automated test case suggestions default to whatever automation tooling
+`rs-aut`'s doc found already in place for that layer, only deviating when
+that doc gives an explicit reason to (no tooling yet, or the existing
+tooling flagged as technical debt).
+
+The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
+modifiers are shared across all three skills.
+
 ## Saving a session to a file
 
 Every answer is automatically saved (no need to ask) as a dated
@@ -88,6 +119,10 @@ markdown file:
 - `/pr-explainer` answers save under `docs/pr-explainer/`, e.g.
   `docs/pr-explainer/pr-explainer_pr142_2026-07-28.md` (or
   `pr-explainer_<branch>_2026-07-28.md` for a local-diff review).
+- `/test-plan` answers save under `docs/test-plan/`, e.g.
+  `docs/test-plan/test-plan_pr142_2026-07-28.md` for a PR-scoped run, or
+  `docs/test-plan/test-plan_2026-07-28.md` for a project/feature-scoped
+  run.
 
 Repeated answers on the same day, for the same topic/PR/branch, update
 that same file rather than creating a new one. Each file leads with the
@@ -107,7 +142,9 @@ aut-onboarding-marketplace/
     ├── skills/
     │   ├── rs-aut/
     │   │   └── SKILL.md
-    │   └── pr-explainer/
+    │   ├── pr-explainer/
+    │   │   └── SKILL.md
+    │   └── test-plan/
     │       └── SKILL.md
     ├── reference/
     │   └── modifiers.md   # shared junior/mid/senior + visual/trace/risk behavior
