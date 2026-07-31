@@ -16,7 +16,8 @@ understanding of it so their own future judgment improves.
 
 Before answering, check whether a skill-level (`junior`/`mid`/`senior`)
 or entry-point (`visual`/`trace`/`risk`) argument has been passed in this
-or an earlier `/rs-aut` or `/pr-explainer` invocation this session. See
+or an earlier `/rs-aut`, `/pr-explainer`, or `/test-plan` invocation this
+session. See
 `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior of
 each. If no skill level has been set yet, default to `mid` behavior and
 mention briefly that a different level is available. If no entry point
@@ -29,6 +30,13 @@ Work through these for whatever part of the project the person is asking
 about (the whole project if they haven't scoped it down). Skip a section
 briefly, rather than at length, if it's genuinely not applicable to what
 they asked — don't force all six onto a narrow question.
+
+Covering "the whole project" means an efficient pass, not an exhaustive
+one. Favor targeted greps and a handful of high-signal files (README,
+entry points, manifests/package files, top-level config) over reading
+every file in the tree. Go deeper into a specific area only when the
+person's question, or something you find along the way, actually points
+there.
 
 1. **Project summary** — what this project/application is, who it's for,
    and what problem it solves, in plain terms.
@@ -43,10 +51,11 @@ they asked — don't force all six onto a narrow question.
 4. **Flow automation requirements** — what automated flows/processes
    exist, what triggers them, and what they're required to do correctly.
 5. **Testing strategy** — how this project is currently tested (manual,
-   automated, or both), where the coverage gaps likely are, and what a
-   tester should prioritize. Under `risk`, lead with this and with what's
-   fragile: what depends on what, what's broken here before (if that's in
-   loaded project knowledge), and what assumption is easiest to get wrong.
+   automated, or both) and where the coverage gaps likely are. Under `risk`,
+   lead with this and with what's fragile: what depends on what, what's
+   broken here before (if that's in loaded project knowledge), and what
+   assumption is easiest to get wrong. For a full prioritized test plan
+   built from this, run `/test-plan`.
 6. **Rollout plan** — how changes to this project typically get released,
    and what the current or most recent rollout plan looks like, if known.
 7. **Technology stack** — what this project is actually built with, and
@@ -99,10 +108,20 @@ they asked — don't force all six onto a narrow question.
 
 ## Working with what's available
 
-Read the actual project files, README, docs, and any configuration you
-have access to before answering — don't rely on the project name alone.
-If the person points you at a specific file, PR, or area, focus there
-first and connect it back to the six topics above only where relevant.
+Search purposefully — grep for the terms, structures, or files each
+topic actually needs — rather than reading broadly through the project.
+Reserve full-file reads for files that turn out to matter, don't rely on
+the project name alone, and don't read a file end-to-end just to confirm
+it isn't relevant. If the person points you at a specific file, PR, or
+area, focus there first and connect it back to the six topics above only
+where relevant.
+
+## Reusing what you've already learned
+
+If `/rs-aut` is invoked again later in the same session and nothing
+suggests the project has changed, reuse the understanding already built
+earlier in the session instead of re-exploring it from scratch. Only
+explore fresh the parts that the new question actually concerns.
 
 ## Always writing the result to a file
 
@@ -138,6 +157,9 @@ to request.
   headers, not bolded prose, so the file's outline is visible in an
   editor's minimap/outline view. When a later answer covers a topic
   already in the file, update that section rather than duplicating it.
+  Updating in place doesn't require re-reading the whole existing file
+  first — append the new or updated section directly, checking existing
+  headers only if you're unsure whether a section is already there.
 - After writing or updating the file, mention the path in your reply so
   the person knows it's there — but don't ask permission first, and
   don't make the write conditional on them wanting it.

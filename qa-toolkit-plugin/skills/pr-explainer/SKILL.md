@@ -14,17 +14,18 @@ covered, what's fragile, and what to poke at first.
 
 1. If an argument looks like a PR number (`123`, `#123`) or a GitHub PR
    URL, use it. Check that `gh` is installed and authenticated (e.g.
-   `gh auth status`) before relying on it. If `gh` works, use
-   `gh pr view` and `gh pr diff` to get the description, commits, and
-   diff.
+   `gh auth status`) before relying on it.
 2. If `gh` isn't available or isn't authenticated, say so plainly, then
    fall back to step 3 instead of failing.
-3. If no argument was given, or the fallback above applies, diff the
+3. If no argument was given, or the fallback above applies, review the
    current branch against the repo's default branch (e.g.
-   `git diff origin/HEAD...HEAD`, falling back to `main` or `master` if
-   `origin/HEAD` isn't set) to review the local working branch.
+   `origin/HEAD`, falling back to `main` or `master` if `origin/HEAD`
+   isn't set) instead of a specific PR.
 4. If there's no diff either way — a clean, up-to-date branch and no PR
    argument — say so directly rather than inventing content to review.
+5. Whichever source applies, pull the actual diff content using the
+   scoped procedure below — never pull a full unfiltered `gh pr diff`
+   or `git diff` before scoping it.
 
 ## Keeping large or noisy diffs out of context
 
@@ -33,11 +34,14 @@ Lockfiles and generated files (`package-lock.json`, `yarn.lock`,
 `build/**`, `vendor/**`, and similar) can dwarf the actual change, and
 they aren't reviewed line-by-line anyway — see "The seven things to
 cover" below, which is about logic and test coverage, not dependency
-bumps. Before pulling the full diff:
+bumps. Always pull a diff in this order, never the full diff first:
 
 1. Get the changed-file list first (`gh pr diff --name-only` /
    `git diff --name-only origin/HEAD...HEAD`, or `--stat` if line
-   counts are useful).
+   counts are useful). Use `gh pr view`/`gh pr diff` (for a PR) or
+   `git diff origin/HEAD...HEAD` (for a local branch) to also get the
+   description and commits, but for the diff body follow steps 2-3
+   below rather than pulling it whole.
 2. For any path that's a lockfile or generated file, don't pull its
    full diff content into context. Just note that it changed and by
    how many lines, from the `--stat`/`--name-only` output.
@@ -45,6 +49,12 @@ bumps. Before pulling the full diff:
    paths (e.g. `git diff origin/HEAD...HEAD -- . ':!package-lock.json'
    ':!yarn.lock'`, or filter the `gh pr diff` output the same way) so
    their content never enters the transcript.
+4. If the remaining (non-lockfile) diff is still very large — many
+   files or thousands of lines — don't pull every file's full diff
+   either. Prioritize the files most central to the logic change (from
+   the `--stat` output and the PR description/commits) and summarize
+   the rest by what changed and its line count rather than quoting
+   every hunk.
 
 This keeps a review of a small logic change from bloating the session
 with thousands of lines of dependency churn that were never going to
@@ -52,11 +62,11 @@ be analyzed anyway.
 
 ## Session modifiers
 
-This skill shares its session modifiers with the `rs-aut` skill. Check
-whether a skill-level (`junior`/`mid`/`senior`) or entry-point
+This skill shares its session modifiers with the `rs-aut` and `test-plan`
+skills. Check whether a skill-level (`junior`/`mid`/`senior`) or entry-point
 (`visual`/`trace`/`risk`) argument has been passed in this or an earlier
-`/pr-explainer` or `/rs-aut` invocation this session — if either has
-already been set, it carries over here without needing to be set again.
+`/pr-explainer`, `/rs-aut`, or `/test-plan` invocation this session — if any
+has already been set, it carries over here without needing to be set again.
 See `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior
 of each. If no skill level has been set yet, default to `mid` behavior
 and mention briefly that a different level is available. If no entry
@@ -70,15 +80,6 @@ re-fetch or re-read it just because a modifier changed. Reuse the
 analysis already produced earlier in the session and re-frame or
 reorder it for the new modifier (e.g. lead with risk instead of scope
 of impact, or adjust vocabulary for `junior` vs `senior`). Only
-re-pull the diff if there's actual reason to think it changed (new
-commits pushed, explicit PR argument again, etc.).
-
-If `/pr-review` is invoked again later in the same session for the
-same PR/branch, and nothing suggests the diff has changed, don't
-re-fetch or re-read it just because a modifier changed. Reuse the
-analysis already produced earlier in the session and re-frame or
-reorder it for the new modifier (e.g. lead with risk instead of scope
-of impact, or adjust vocabulary for `/junior` vs `/senior`). Only
 re-pull the diff if there's actual reason to think it changed (new
 commits pushed, explicit PR argument again, etc.).
 
@@ -104,12 +105,10 @@ onto a trivial change.
 5. **Risk assessment** — what's fragile, what depends on this, what's
    broken here before (if that's in loaded project knowledge), and what
    edge case is easiest to miss. Under `risk`, lead with this.
-6. **Suggested test plan** — concrete manual and/or automated test
-   cases a QA should run, ordered by priority (highest-risk first).
-   When the PR introduces a new feature or new functionality (as
-   opposed to a bug fix, refactor, or minor change), give both a
-   manual test plan and automated test case suggestions — not just
-   one or the other.
+6. **Suggested test plan** — for a full prioritized manual and
+   automated test plan, run `/test-plan` (it reads this file for the
+   test coverage and risk context above). Mention this pointer rather
+   than generating detailed test cases here.
 7. **Non-functional considerations** — performance, security,
    data/schema/migration impact, rollback safety, and backwards
    compatibility, where relevant to this specific change.
@@ -168,7 +167,10 @@ someone has to request.
   topics actually covered), so it scans well in an editor like VS Code
   rather than reading like a chat transcript. When a later answer
   covers a topic already in the file, update that section rather than
-  duplicating it.
+  duplicating it. Updating in place doesn't require re-reading the
+  whole existing file first — append the new or updated section
+  directly, checking existing headers only if you're unsure whether a
+  section is already there.
 - After writing or updating the file, mention the path in your reply so
   the person knows it's there — but don't ask permission first, and
   don't make the write conditional on them wanting it.
