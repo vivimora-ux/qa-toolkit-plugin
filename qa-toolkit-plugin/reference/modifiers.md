@@ -1,9 +1,10 @@
-# Modifiers for `rs-aut` and `pr-explainer`
+# Modifiers for `rs-aut`, `pr-explainer`, and `test-plan`
 
 `junior`/`mid`/`senior` and `visual`/`trace`/`risk` are passed as
-arguments to `/rs-aut` or `/pr-explainer` (e.g.
-`/rs-aut senior risk the checkout flow`, `/pr-explainer junior trace 142`).
-Once set, a modifier is shared across both skills and stays in effect
+arguments to `/rs-aut`, `/pr-explainer`, or `/test-plan` (e.g.
+`/rs-aut senior risk the checkout flow`, `/pr-explainer junior trace 142`,
+`/test-plan risk 142`).
+Once set, a modifier is shared across all three skills and stays in effect
 for the rest of the session until a different value in the same
 category is passed again. Never treat a skill-level modifier as a
 permanent label — the same person may want a different level on a
@@ -69,14 +70,20 @@ are with the area in question. Don't remark on someone "still" using
   to each other — favor a spatial/structural description, or an actual
   diagram if available, over a narrative walk-through. In `pr-explainer`,
   lead with scope of impact: which files, components, or services the
-  change touches, and what part of the application that represents.
+  change touches, and what part of the application that represents. In
+  `test-plan`, group test cases by component/feature area first, then by
+  priority within each group.
 
 - **`trace`** — leads with a step-by-step walk-through. In `rs-aut`,
   follow one concrete path through the system from start to finish, in
   the order things actually happen. In `pr-explainer`, walk through the
   meaningful logic change(s) in the diff, in the order they'd actually
-  execute.
+  execute. In `test-plan`, write the single highest-priority test case
+  first as a full step-by-step scenario, then list the rest more briefly.
 
-- **`risk`** — leads with fragility. In both skills: what's fragile,
-  what depends on this, what's broken here before (if that's in loaded
-  project knowledge), and what assumption is easiest to get wrong.
+- **`risk`** — leads with fragility. In `rs-aut` and `pr-explainer`: what's
+  fragile, what depends on this, what's broken here before (if that's in
+  loaded project knowledge), and what assumption is easiest to get wrong.
+  In `test-plan`, this is already the default ordering (highest-risk
+  first) — under this modifier, also state briefly why each top case is
+  highest-risk.

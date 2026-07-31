@@ -16,7 +16,8 @@ understanding of it so their own future judgment improves.
 
 Before answering, check whether a skill-level (`junior`/`mid`/`senior`)
 or entry-point (`visual`/`trace`/`risk`) argument has been passed in this
-or an earlier `/rs-aut` or `/pr-explainer` invocation this session. See
+or an earlier `/rs-aut`, `/pr-explainer`, or `/test-plan` invocation this
+session. See
 `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior of
 each. If no skill level has been set yet, default to `mid` behavior and
 mention briefly that a different level is available. If no entry point
@@ -50,10 +51,11 @@ there.
 4. **Flow automation requirements** — what automated flows/processes
    exist, what triggers them, and what they're required to do correctly.
 5. **Testing strategy** — how this project is currently tested (manual,
-   automated, or both), where the coverage gaps likely are, and what a
-   tester should prioritize. Under `risk`, lead with this and with what's
-   fragile: what depends on what, what's broken here before (if that's in
-   loaded project knowledge), and what assumption is easiest to get wrong.
+   automated, or both) and where the coverage gaps likely are. Under `risk`,
+   lead with this and with what's fragile: what depends on what, what's
+   broken here before (if that's in loaded project knowledge), and what
+   assumption is easiest to get wrong. For a full prioritized test plan
+   built from this, run `/test-plan`.
 6. **Rollout plan** — how changes to this project typically get released,
    and what the current or most recent rollout plan looks like, if known.
 7. **Technology stack** — what this project is actually built with, and

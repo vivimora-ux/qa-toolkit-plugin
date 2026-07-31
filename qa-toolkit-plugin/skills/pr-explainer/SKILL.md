@@ -62,11 +62,11 @@ be analyzed anyway.
 
 ## Session modifiers
 
-This skill shares its session modifiers with the `rs-aut` skill. Check
-whether a skill-level (`junior`/`mid`/`senior`) or entry-point
+This skill shares its session modifiers with the `rs-aut` and `test-plan`
+skills. Check whether a skill-level (`junior`/`mid`/`senior`) or entry-point
 (`visual`/`trace`/`risk`) argument has been passed in this or an earlier
-`/pr-explainer` or `/rs-aut` invocation this session — if either has
-already been set, it carries over here without needing to be set again.
+`/pr-explainer`, `/rs-aut`, or `/test-plan` invocation this session — if any
+has already been set, it carries over here without needing to be set again.
 See `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior
 of each. If no skill level has been set yet, default to `mid` behavior
 and mention briefly that a different level is available. If no entry
@@ -105,12 +105,10 @@ onto a trivial change.
 5. **Risk assessment** — what's fragile, what depends on this, what's
    broken here before (if that's in loaded project knowledge), and what
    edge case is easiest to miss. Under `risk`, lead with this.
-6. **Suggested test plan** — concrete manual and/or automated test
-   cases a QA should run, ordered by priority (highest-risk first).
-   When the PR introduces a new feature or new functionality (as
-   opposed to a bug fix, refactor, or minor change), give both a
-   manual test plan and automated test case suggestions — not just
-   one or the other.
+6. **Suggested test plan** — for a full prioritized manual and
+   automated test plan, run `/test-plan` (it reads this file for the
+   test coverage and risk context above). Mention this pointer rather
+   than generating detailed test cases here.
 7. **Non-functional considerations** — performance, security,
    data/schema/migration impact, rollback safety, and backwards
    compatibility, where relevant to this specific change.
