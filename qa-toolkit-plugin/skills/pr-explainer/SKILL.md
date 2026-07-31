@@ -14,17 +14,18 @@ covered, what's fragile, and what to poke at first.
 
 1. If an argument looks like a PR number (`123`, `#123`) or a GitHub PR
    URL, use it. Check that `gh` is installed and authenticated (e.g.
-   `gh auth status`) before relying on it. If `gh` works, use
-   `gh pr view` and `gh pr diff` to get the description, commits, and
-   diff.
+   `gh auth status`) before relying on it.
 2. If `gh` isn't available or isn't authenticated, say so plainly, then
    fall back to step 3 instead of failing.
-3. If no argument was given, or the fallback above applies, diff the
+3. If no argument was given, or the fallback above applies, review the
    current branch against the repo's default branch (e.g.
-   `git diff origin/HEAD...HEAD`, falling back to `main` or `master` if
-   `origin/HEAD` isn't set) to review the local working branch.
+   `origin/HEAD`, falling back to `main` or `master` if `origin/HEAD`
+   isn't set) instead of a specific PR.
 4. If there's no diff either way — a clean, up-to-date branch and no PR
    argument — say so directly rather than inventing content to review.
+5. Whichever source applies, pull the actual diff content using the
+   scoped procedure below — never pull a full unfiltered `gh pr diff`
+   or `git diff` before scoping it.
 
 ## Keeping large or noisy diffs out of context
 
@@ -33,11 +34,14 @@ Lockfiles and generated files (`package-lock.json`, `yarn.lock`,
 `build/**`, `vendor/**`, and similar) can dwarf the actual change, and
 they aren't reviewed line-by-line anyway — see "The seven things to
 cover" below, which is about logic and test coverage, not dependency
-bumps. Before pulling the full diff:
+bumps. Always pull a diff in this order, never the full diff first:
 
 1. Get the changed-file list first (`gh pr diff --name-only` /
    `git diff --name-only origin/HEAD...HEAD`, or `--stat` if line
-   counts are useful).
+   counts are useful). Use `gh pr view`/`gh pr diff` (for a PR) or
+   `git diff origin/HEAD...HEAD` (for a local branch) to also get the
+   description and commits, but for the diff body follow steps 2-3
+   below rather than pulling it whole.
 2. For any path that's a lockfile or generated file, don't pull its
    full diff content into context. Just note that it changed and by
    how many lines, from the `--stat`/`--name-only` output.
@@ -45,6 +49,12 @@ bumps. Before pulling the full diff:
    paths (e.g. `git diff origin/HEAD...HEAD -- . ':!package-lock.json'
    ':!yarn.lock'`, or filter the `gh pr diff` output the same way) so
    their content never enters the transcript.
+4. If the remaining (non-lockfile) diff is still very large — many
+   files or thousands of lines — don't pull every file's full diff
+   either. Prioritize the files most central to the logic change (from
+   the `--stat` output and the PR description/commits) and summarize
+   the rest by what changed and its line count rather than quoting
+   every hunk.
 
 This keeps a review of a small logic change from bloating the session
 with thousands of lines of dependency churn that were never going to
@@ -70,15 +80,6 @@ re-fetch or re-read it just because a modifier changed. Reuse the
 analysis already produced earlier in the session and re-frame or
 reorder it for the new modifier (e.g. lead with risk instead of scope
 of impact, or adjust vocabulary for `junior` vs `senior`). Only
-re-pull the diff if there's actual reason to think it changed (new
-commits pushed, explicit PR argument again, etc.).
-
-If `/pr-review` is invoked again later in the same session for the
-same PR/branch, and nothing suggests the diff has changed, don't
-re-fetch or re-read it just because a modifier changed. Reuse the
-analysis already produced earlier in the session and re-frame or
-reorder it for the new modifier (e.g. lead with risk instead of scope
-of impact, or adjust vocabulary for `/junior` vs `/senior`). Only
 re-pull the diff if there's actual reason to think it changed (new
 commits pushed, explicit PR argument again, etc.).
 
@@ -168,7 +169,10 @@ someone has to request.
   topics actually covered), so it scans well in an editor like VS Code
   rather than reading like a chat transcript. When a later answer
   covers a topic already in the file, update that section rather than
-  duplicating it.
+  duplicating it. Updating in place doesn't require re-reading the
+  whole existing file first — append the new or updated section
+  directly, checking existing headers only if you're unsure whether a
+  section is already there.
 - After writing or updating the file, mention the path in your reply so
   the person knows it's there — but don't ask permission first, and
   don't make the write conditional on them wanting it.

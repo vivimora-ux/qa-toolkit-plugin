@@ -30,6 +30,13 @@ about (the whole project if they haven't scoped it down). Skip a section
 briefly, rather than at length, if it's genuinely not applicable to what
 they asked — don't force all six onto a narrow question.
 
+Covering "the whole project" means an efficient pass, not an exhaustive
+one. Favor targeted greps and a handful of high-signal files (README,
+entry points, manifests/package files, top-level config) over reading
+every file in the tree. Go deeper into a specific area only when the
+person's question, or something you find along the way, actually points
+there.
+
 1. **Project summary** — what this project/application is, who it's for,
    and what problem it solves, in plain terms.
 2. **Architecture overview** — the major components/services and how
@@ -99,10 +106,20 @@ they asked — don't force all six onto a narrow question.
 
 ## Working with what's available
 
-Read the actual project files, README, docs, and any configuration you
-have access to before answering — don't rely on the project name alone.
-If the person points you at a specific file, PR, or area, focus there
-first and connect it back to the six topics above only where relevant.
+Search purposefully — grep for the terms, structures, or files each
+topic actually needs — rather than reading broadly through the project.
+Reserve full-file reads for files that turn out to matter, don't rely on
+the project name alone, and don't read a file end-to-end just to confirm
+it isn't relevant. If the person points you at a specific file, PR, or
+area, focus there first and connect it back to the six topics above only
+where relevant.
+
+## Reusing what you've already learned
+
+If `/rs-aut` is invoked again later in the same session and nothing
+suggests the project has changed, reuse the understanding already built
+earlier in the session instead of re-exploring it from scratch. Only
+explore fresh the parts that the new question actually concerns.
 
 ## Always writing the result to a file
 
@@ -138,6 +155,9 @@ to request.
   headers, not bolded prose, so the file's outline is visible in an
   editor's minimap/outline view. When a later answer covers a topic
   already in the file, update that section rather than duplicating it.
+  Updating in place doesn't require re-reading the whole existing file
+  first — append the new or updated section directly, checking existing
+  headers only if you're unsure whether a section is already there.
 - After writing or updating the file, mention the path in your reply so
   the person knows it's there — but don't ask permission first, and
   don't make the write conditional on them wanting it.
