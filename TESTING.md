@@ -1,7 +1,8 @@
-# Testing guide: `rs-aut` and `pr-explainer`
+# Testing guide: `rs-aut`, `pr-explainer`, and `test-plan`
 
-For QA testers verifying the `/rs-aut` and `/pr-explainer` skills, and
-their six shared modifier arguments, on a project of your choice.
+For QA testers verifying the `/rs-aut`, `/pr-explainer`, and `/test-plan`
+skills, and their six shared modifier arguments, on a project of your
+choice.
 
 ## Prerequisites
 
@@ -18,9 +19,11 @@ their six shared modifier arguments, on a project of your choice.
 
 ## What you're testing
 
-- **2 skills**: `/rs-aut [modifiers] [topic]`, `/pr-explainer [modifiers] [PR#|URL|blank]`
-- **6 modifier arguments**, shared across both skills, in effect for the
-  rest of the session once set:
+- **3 skills**: `/rs-aut [modifiers] [topic]`,
+  `/pr-explainer [modifiers] [PR#|URL|blank]`,
+  `/test-plan [modifiers] [PR#|URL|feature area|blank]`
+- **6 modifier arguments**, shared across all three skills, in effect for
+  the rest of the session once set:
   - Skill level: `junior`, `mid`, `senior`
   - Entry point: `visual`, `trace`, `risk`
 
@@ -133,14 +136,66 @@ After a few runs on the same day:
 - Confirm the "Commands used" list accumulates every modifier and
   invocation typed so far, in order, as inline code.
 
+## Test 8 — `/test-plan` scope detection and missing-doc handling
+
+Run each in its own session, against the target project:
+
+- `/test-plan <PR#>` (with a matching `docs/pr-explainer/` doc already
+  on disk from Test 5/6) — should read that doc and produce a
+  PR-scoped plan, without re-reading the diff itself.
+- `/test-plan <feature area>` (with a matching `docs/onboarding/` doc
+  already on disk from Test 1) — should read that doc and produce a
+  project-scoped plan.
+- `/test-plan <PR#>` where **no** matching `docs/pr-explainer/` doc
+  exists yet — should say so plainly and suggest running
+  `/pr-explainer` first, not analyze the diff itself to fill the gap.
+- `/test-plan <feature area>` where **no** `docs/onboarding/` doc
+  exists yet — should say so plainly and suggest `/rs-aut` first.
+
+## Test 9 — Modifiers carry over to `/test-plan`, and tech suggestions
+
+In the same session as Test 3/4 (don't reset), without resetting the
+modifiers:
+
+```
+/test-plan <PR#>
+```
+
+Expect it still applies `senior`/`risk` from earlier, confirming
+modifiers are shared across all three skills. Also confirm:
+
+- Automated test case suggestions name a specific tool the `rs-aut` doc's
+  **Technology stack** section already listed for that layer (e.g.
+  Playwright already in place → suggests Playwright, not Cypress),
+  and only suggest something different when the doc gave an explicit
+  reason (no tooling yet, or tooling flagged as technical debt).
+- If this run had no `rs-aut` doc to draw from (PR-scoped only), it
+  says so and skips technology suggestions rather than guessing the
+  stack directly.
+
+## Test 10 — `/test-plan` file output
+
+After a run or two on the same day:
+
+- Confirm `docs/test-plan/test-plan_pr<PR#>_<today's date>.md` (or
+  `test-plan_<today's date>.md` for a project-scoped run) exists in the
+  *target* project, with a header block (`Created:`, source doc
+  path(s), `Commands used:`).
+- Run a second `/test-plan` later the same day on the same scope —
+  confirm it **updates** the existing file rather than duplicating it.
+
 ## Quick pass/fail checklist
 
 - [ ] Plugin installs cleanly in a separate project
 - [ ] Each of the 6 modifiers produces visibly distinct behavior when
       passed as an argument
-- [ ] Modifiers persist across the session and across both skills
+- [ ] Modifiers persist across the session and across all three skills
 - [ ] `/pr-explainer` handles: PR number, PR URL, blank/local diff,
       no-`gh`, nothing-to-review
-- [ ] Files are written to the target project's `docs/onboarding/` and
-      `docs/pr-explainer/`, not this repo
+- [ ] `/test-plan` correctly detects PR-scoped vs. project-scoped runs,
+      and refuses to guess when the source doc is missing
+- [ ] `/test-plan` technology suggestions match what `rs-aut` found in
+      place, deviating only with a stated reason
+- [ ] Files are written to the target project's `docs/onboarding/`,
+      `docs/pr-explainer/`, and `docs/test-plan/`, not this repo
 - [ ] Same-day reruns update files in place instead of duplicating
