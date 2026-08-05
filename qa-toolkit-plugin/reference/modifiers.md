@@ -1,10 +1,11 @@
-# Modifiers for `rs-aut`, `pr-explainer`, and `test-plan`
+# Modifiers for `rs-aut`, `pr-explainer`, `test-plan`, and `test-suite`
 
 `junior`/`mid`/`senior` and `visual`/`trace`/`risk` are passed as
-arguments to `/rs-aut`, `/pr-explainer`, or `/test-plan` (e.g.
-`/rs-aut senior risk the checkout flow`, `/pr-explainer junior trace 142`,
-`/test-plan risk 142`).
-Once set, a modifier is shared across all three skills and stays in effect
+arguments to `/rs-aut`, `/pr-explainer`, `/test-plan`, or `/test-suite`
+(e.g. `/rs-aut senior risk the checkout flow`,
+`/pr-explainer junior trace 142`, `/test-plan risk 142`,
+`/test-suite senior risk`).
+Once set, a modifier is shared across all four skills and stays in effect
 for the rest of the session until a different value in the same
 category is passed again. Never treat a skill-level modifier as a
 permanent label — the same person may want a different level on a
@@ -72,7 +73,8 @@ are with the area in question. Don't remark on someone "still" using
   lead with scope of impact: which files, components, or services the
   change touches, and what part of the application that represents. In
   `test-plan`, group test cases by component/feature area first, then by
-  priority within each group.
+  priority within each group. In `test-suite`, group the inventory by
+  module/component first, then by priority within each group.
 
 - **`trace`** — leads with a step-by-step walk-through. In `rs-aut`,
   follow one concrete path through the system from start to finish, in
@@ -80,10 +82,12 @@ are with the area in question. Don't remark on someone "still" using
   meaningful logic change(s) in the diff, in the order they'd actually
   execute. In `test-plan`, write the single highest-priority test case
   first as a full step-by-step scenario, then list the rest more briefly.
+  In `test-suite`, order cases along real user/data flows end to end,
+  rather than by module.
 
 - **`risk`** — leads with fragility. In `rs-aut` and `pr-explainer`: what's
   fragile, what depends on this, what's broken here before (if that's in
   loaded project knowledge), and what assumption is easiest to get wrong.
-  In `test-plan`, this is already the default ordering (highest-risk
-  first) — under this modifier, also state briefly why each top case is
-  highest-risk.
+  In `test-plan` and `test-suite`, this is already the default ordering
+  (highest-risk first) — under this modifier, also state briefly why
+  each top case/area is highest-risk.

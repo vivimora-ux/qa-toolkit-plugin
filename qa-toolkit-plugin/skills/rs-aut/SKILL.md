@@ -16,7 +16,8 @@ understanding of it so their own future judgment improves.
 
 Before answering, check whether a skill-level (`junior`/`mid`/`senior`)
 or entry-point (`visual`/`trace`/`risk`) argument has been passed in this
-or an earlier `/rs-aut`, `/pr-explainer`, or `/test-plan` invocation this
+or an earlier `/rs-aut`, `/pr-explainer`, `/test-plan`, or `/test-suite`
+invocation this
 session. See
 `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior of
 each. If no skill level has been set yet, default to `mid` behavior and

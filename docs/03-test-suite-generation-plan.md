@@ -51,6 +51,15 @@ feature/area, run over time) to build the full inventory.
 - **Reuses the shared modifiers.** Same `/junior`, `/mid`, `/senior`,
   `/visual`, `/trace`, `/risk` commands from `rs-aut` — no new modifiers
   introduced in this phase.
+- **Implemented as a Skill, not an Agent.** Skills run inline in the main
+  conversation, which the shared session-modifier tracking and same-day
+  file-update continuity both depend on. An Agent (Task-tool subagent)
+  starts in an isolated context with none of that state, and would break
+  consistency with the other three skills. Noted as a possible future
+  optimization only: if a project's `rs-aut` doc volume gets large enough
+  to bloat context, the Skill could internally delegate the doc-reading
+  step to a subagent while still synthesizing the inventory itself
+  inline — not needed today.
 
 ## Goals
 
@@ -202,7 +211,10 @@ Shared with the other three skills, per `reference/modifiers.md`:
 - **Inventory size on larger projects.** A truly whole-project case list
   could get long. Worth watching during pilot whether it needs
   pagination/splitting by module into separate files, versus one long
-  document.
+  document. If doc-*reading* volume (not just inventory output) becomes
+  a real context problem, the Skill+internal-Agent hybrid noted above is
+  the mitigation to reach for, rather than rewriting `test-suite` as a
+  standalone Agent.
 - **Where this sits relative to `test-plan` in practice.** Once
   `test-suite` exists, team members need a clear mental model for when
   to reach for which: `test-suite` for "we have nothing yet, what's the

@@ -83,11 +83,12 @@ doesn't apply to manual test cases.
 
 ## Session modifiers
 
-This skill shares its session modifiers with `pr-explainer` and `rs-aut`.
-Check whether a skill-level (`junior`/`mid`/`senior`) or entry-point
-(`visual`/`trace`/`risk`) argument has been passed in this or an earlier
-`/test-plan`, `/pr-explainer`, or `/rs-aut` invocation this session — if any
-has already been set, it carries over here without needing to be set again.
+This skill shares its session modifiers with `pr-explainer`, `rs-aut`, and
+`test-suite`. Check whether a skill-level (`junior`/`mid`/`senior`) or
+entry-point (`visual`/`trace`/`risk`) argument has been passed in this or an
+earlier `/test-plan`, `/pr-explainer`, `/rs-aut`, or `/test-suite` invocation
+this session — if any has already been set, it carries over here without
+needing to be set again.
 See `${CLAUDE_PLUGIN_ROOT}/reference/modifiers.md` for the full behavior of
 each. If no skill level has been set yet, default to `mid` behavior and
 mention briefly that a different level is available. If no entry point has
