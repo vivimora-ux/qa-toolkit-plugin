@@ -57,6 +57,16 @@ skill run.
   projects with little or no existing automated tests. Retrofitting or
   refactoring an already-substantial existing test suite is out of scope
   for now (see Non-goals).
+- **Skill entry point, Agent fan-out for generation.** `test-automate`
+  is a Skill (consistent with the rest of the plugin, and because
+  comment-density modifiers and framework-choice resolution need
+  main-conversation/session continuity), but the actual per-case code
+  generation is delegated to one Agent per target spec file, not
+  written inline — generated code volume and the naturally
+  parallelizable, file-independent shape of the work make this a
+  better fit than the narrative-style Skills elsewhere in the plugin.
+  Cases are grouped by target spec file before fan-out so no two
+  agents write the same file.
 
 ## Goals
 
@@ -141,6 +151,9 @@ When invoked:
    produce a spec file (or add a test case to an existing spec file, if
    one already exists for that area/component) following that
    framework's idiomatic conventions, per `reference/frameworks.md`.
+   Implemented as an Agent fan-out: cases are grouped by target spec
+   file first, then one Agent per target file generates and writes that
+   file's code in parallel — not generated inline by the Skill itself.
 4. **Report what was skipped.** Any case marked manual-only in the
    source doc is listed as skipped, with the reason, rather than
    silently omitted.
@@ -217,6 +230,12 @@ When invoked:
   analysis), it's tempting to extend it toward fixing/refactoring
   existing tests later. Explicitly out of scope for v1 (see Non-goals) —
   worth reinforcing at review time if pilot feedback pushes toward this.
+- **Parallel-write conflicts.** If two test cases map to the same
+  existing spec file, generating them via separate concurrent Agents
+  without first grouping by target file could corrupt or drop one
+  write. Mitigation: group cases by target file before fan-out (one
+  Agent per file, never two Agents per file) — needs to be built into
+  the implementation, not left as a runtime assumption.
 
 ## Suggested subtasks
 

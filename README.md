@@ -6,8 +6,11 @@ overview, data flow and Data Cloud integrations, flow automation
 requirements, testing strategy, and rollout plan — via the `rs-aut`
 skill. It also includes a `pr-explainer` skill for reviewing a pull
 request from a testing-risk lens: what changed, what's untested, and
-what's fragile — and a `test-plan` skill that turns that analysis into
-a prioritized manual + automated test plan.
+what's fragile — a `test-plan` skill that turns that analysis into
+a prioritized manual + automated test plan for one PR or feature area —
+and a `test-suite` skill that reads across all of a project's `rs-aut`
+docs to build a full, project-wide test case inventory, for projects
+that don't have one yet.
 
 ## Install
 
@@ -106,8 +109,35 @@ Automated test case suggestions default to whatever automation tooling
 that doc gives an explicit reason to (no tooling yet, or the existing
 tooling flagged as technical debt).
 
+## Usage: full test-suite inventory (`/test-suite`)
+
+`test-plan` is deliberately narrow: it scopes to one PR or one feature
+area. `test-suite` is the project-wide counterpart — it reads across
+*all* of a project's `rs-aut` docs (not just one) to build a full,
+exhaustive test case inventory: every manual and automatable test case a
+QA should have written for the whole application. Reach for `test-suite`
+when a project has little or no existing test automation and there's no
+single PR or area to scope a plan against yet; reach for `test-plan` once
+there's a specific change or area in front of you.
+
+```
+/test-suite
+/test-suite senior risk
+```
+
+- Looks for every `docs/onboarding/rs-aut_*.md` file in the project, and
+  combines them if the project has been onboarded piecemeal across
+  multiple areas or days.
+- If no `rs-aut` docs exist yet, it says so and suggests running
+  `/rs-aut` first, rather than analyzing the project from scratch itself.
+- Names explicitly which feature areas or topics have no `rs-aut` coverage
+  yet, so the inventory is honest about what's partial.
+- Every case is tagged with a priority (highest-risk first, traced back to
+  what `rs-aut` actually flagged) and a type (functional / edge / negative /
+  integration).
+
 The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
-modifiers are shared across all three skills.
+modifiers are shared across all four skills.
 
 ## Saving a session to a file
 
@@ -123,6 +153,8 @@ markdown file:
   `docs/test-plan/test-plan_pr142_2026-07-28.md` for a PR-scoped run, or
   `docs/test-plan/test-plan_2026-07-28.md` for a project/feature-scoped
   run.
+- `/test-suite` answers save under `docs/test-suite/`, e.g.
+  `docs/test-suite/test-suite_2026-07-28.md`. One file per day, project-wide.
 
 Repeated answers on the same day, for the same topic/PR/branch, update
 that same file rather than creating a new one. Each file leads with the
@@ -144,7 +176,9 @@ aut-onboarding-marketplace/
     │   │   └── SKILL.md
     │   ├── pr-explainer/
     │   │   └── SKILL.md
-    │   └── test-plan/
+    │   ├── test-plan/
+    │   │   └── SKILL.md
+    │   └── test-suite/
     │       └── SKILL.md
     ├── reference/
     │   └── modifiers.md   # shared junior/mid/senior + visual/trace/risk behavior
