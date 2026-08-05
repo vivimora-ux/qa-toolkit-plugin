@@ -1,8 +1,9 @@
-# Testing guide: `rs-aut`, `pr-explainer`, `test-plan`, and `test-suite`
+# Testing guide: `rs-aut`, `pr-explainer`, `test-plan`, `test-suite`, and `test-automate`
 
-For QA testers verifying the `/rs-aut`, `/pr-explainer`, `/test-plan`, and
-`/test-suite` skills, and their six shared modifier arguments, on a project
-of your choice.
+For QA testers verifying the `/rs-aut`, `/pr-explainer`, `/test-plan`,
+`/test-suite`, and `/test-automate` skills, on a project of your choice.
+The first four share six modifier arguments; `test-automate` only uses
+three of them (see below).
 
 ## Prerequisites
 
@@ -19,12 +20,14 @@ of your choice.
 
 ## What you're testing
 
-- **4 skills**: `/rs-aut [modifiers] [topic]`,
+- **5 skills**: `/rs-aut [modifiers] [topic]`,
   `/pr-explainer [modifiers] [PR#|URL|blank]`,
   `/test-plan [modifiers] [PR#|URL|feature area|blank]`,
-  `/test-suite [modifiers]`
-- **6 modifier arguments**, shared across all four skills, in effect for
-  the rest of the session once set:
+  `/test-suite [modifiers]`,
+  `/test-automate [junior|mid|senior] [framework] [PR#|URL|feature area|blank]`
+- **6 modifier arguments**, shared across the first four skills, in effect
+  for the rest of the session once set. `test-automate` only uses skill
+  level (depth), never entry point (framing) — see Test 18:
   - Skill level: `junior`, `mid`, `senior`
   - Entry point: `visual`, `trace`, `risk`
 
@@ -244,6 +247,72 @@ After a run or two on the same day:
 - Run a second `/test-suite` later the same day — confirm it **updates**
   the existing file rather than duplicating it.
 
+## Test 15 — `/test-automate` with no source doc
+
+In a project with no `docs/test-suite/` or `docs/test-plan/` doc, run:
+
+```
+/test-automate
+```
+
+Expect it to say so plainly and suggest `/test-suite` or `/test-plan`
+first — it should not analyze the project or generate any code itself
+to fill the gap.
+
+## Test 16 — Framework detection, persistence, and override
+
+With a `docs/test-suite/` or `docs/test-plan/` doc present, and no prior
+`/test-automate` run yet:
+
+```
+/test-automate
+```
+
+Expect: if `rs-aut`'s doc already found a framework in place, it's used
+without asking; otherwise it asks once. Then run again the same day:
+
+```
+/test-automate
+```
+
+Expect the same framework reused without asking again (read from the
+prior run's summary doc header). Then explicitly override:
+
+```
+/test-automate webdriverio
+```
+
+Expect the override to take effect immediately and persist for
+subsequent runs.
+
+## Test 17 — Automatable filtering and skipped-case reporting
+
+- Against a `docs/test-suite/` doc: confirm only `automatable: yes`
+  cases are turned into specs, and every `automatable: no` case appears
+  in the skipped-cases report with its reason.
+- Against a `docs/test-plan/` doc: confirm only cases under "Automated
+  test case suggestions" are turned into specs, and cases that only
+  appear under "Manual test cases" are reported as skipped, not
+  force-converted.
+- If a generation agent can't sensibly automate a case it was assigned
+  (a generation-time skip), confirm it's reported too, and that the
+  final report doesn't silently drop either skip source.
+
+## Test 18 — Generated file correctness and modifier scope
+
+- Open a generated spec file and confirm it has a traceability comment
+  linking back to its source case and source doc path.
+- Compare the same case generated under `/test-automate junior` vs.
+  `/test-automate senior` — expect visibly different comment density
+  (junior: explains most assertions; senior: comment-light, only the
+  traceability comment).
+- If the source doc has two cases that map to the same target spec
+  file, confirm they land in **one** file with both tests present, not
+  two separate/conflicting files.
+- Confirm `/test-automate visual` or `/test-automate risk` either has
+  no effect or is declined — `test-automate` doesn't use entry-point
+  modifiers, unlike the other four skills.
+
 ## Quick pass/fail checklist
 
 - [ ] Plugin installs cleanly in a separate project
@@ -259,8 +328,19 @@ After a run or two on the same day:
 - [ ] `/test-suite` refuses to invent coverage when no `rs-aut` doc
       exists, and discloses gaps plainly when docs are only partial
 - [ ] `/test-suite` correctly combines multiple `rs-aut` docs, and every
-      case carries both a priority and a type
+      case carries a priority, a type, and an automatable tag
+- [ ] `/test-automate` refuses to generate anything when no source doc
+      exists, and never invents a test case not in that doc
+- [ ] `/test-automate` framework resolution follows the right order:
+      explicit argument > persisted choice > `rs-aut` detection > ask once
+- [ ] `/test-automate` correctly filters to automatable/automated-suggested
+      cases only, and reports every skip (pre-filtered and generation-time)
+- [ ] `/test-automate` groups cases by target spec file before generating,
+      so two cases for the same file never produce conflicting writes
+- [ ] `/test-automate` comment density visibly differs across
+      `junior`/`mid`/`senior`, and ignores `visual`/`trace`/`risk`
 - [ ] Files are written to the target project's `docs/onboarding/`,
-      `docs/pr-explainer/`, `docs/test-plan/`, and `docs/test-suite/`,
-      not this repo
+      `docs/pr-explainer/`, `docs/test-plan/`, `docs/test-suite/`, and
+      `docs/test-automate/` (plus real spec files in the project's test
+      directory for `test-automate`), not this repo
 - [ ] Same-day reruns update files in place instead of duplicating

@@ -17,9 +17,9 @@ one change or area; `test-suite` reads across *all* of a project's
 projects that currently have little or no test automation in place.
 
 This skill is framework-agnostic. It produces test cases in plain
-language plus structural metadata (module, priority, type) — it does not
-generate test code or pick an automation framework. That is a separate,
-later phase.
+language plus structural metadata (module, priority, type, automatable)
+— it does not generate test code or pick an automation framework. That
+is a separate, later phase.
 
 ## Gathering source material
 
@@ -81,7 +81,17 @@ Tag each case with its type (functional / edge / negative / integration)
 alongside its priority, so the inventory can be scanned or filtered by
 either dimension.
 
-## Session modifiers
+### Automatable tagging
+
+Tag each case `automatable: yes` or `automatable: no`. A case is `no`
+when it inherently needs human judgment to evaluate — visual inspection,
+a subjective UX call, open-ended exploratory investigation — rather than
+a deterministic pass/fail a script could assert. Default to `yes` unless
+the case actually requires that kind of judgment; don't mark a case `no`
+just because automating it would be more work. This tag exists so a
+downstream skill (`test-automate`) can tell which cases in this inventory
+are candidates for generated test code without re-deriving that judgment
+itself.
 
 This skill shares its session modifiers with `rs-aut`, `pr-explainer`,
 and `test-plan`. Check whether a skill-level (`junior`/`mid`/`senior`)
@@ -169,8 +179,8 @@ someone has to request.
     even if nobody reads past the header.
 - **Body** — the inventory organized under clear markdown headers,
   grouped by module (or by flow, under `visual`/`trace`), each case
-  tagged with priority and type, so it scans well in an editor like VS
-  Code rather than reading like a chat transcript. Use real
+  tagged with priority, type, and automatable, so it scans well in an
+  editor like VS Code rather than reading like a chat transcript. Use real
   `##`/`###` headers, not bolded prose. When a later answer covers a
   case or module already in the file, update that section rather than
   duplicating it. Updating in place doesn't require re-reading the

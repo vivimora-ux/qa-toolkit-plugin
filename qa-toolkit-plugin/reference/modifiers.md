@@ -1,17 +1,25 @@
-# Modifiers for `rs-aut`, `pr-explainer`, `test-plan`, and `test-suite`
+# Modifiers for `rs-aut`, `pr-explainer`, `test-plan`, `test-suite`, and `test-automate`
 
 `junior`/`mid`/`senior` and `visual`/`trace`/`risk` are passed as
 arguments to `/rs-aut`, `/pr-explainer`, `/test-plan`, or `/test-suite`
 (e.g. `/rs-aut senior risk the checkout flow`,
 `/pr-explainer junior trace 142`, `/test-plan risk 142`,
 `/test-suite senior risk`).
-Once set, a modifier is shared across all four skills and stays in effect
-for the rest of the session until a different value in the same
+Once set, a modifier is shared across those four skills and stays in
+effect for the rest of the session until a different value in the same
 category is passed again. Never treat a skill-level modifier as a
 permanent label — the same person may want a different level on a
 different day or a different PR, depending on how familiar they already
 are with the area in question. Don't remark on someone "still" using
 `junior`.
+
+`test-automate` (`/test-automate senior playwright 142`) is asymmetric:
+it also reuses `junior`/`mid`/`senior` — there, depth controls comment
+density in generated code rather than explanation depth — but it has no
+use for `visual`/`trace`/`risk` at all, since there's no equivalent
+framing concept for writing code files. Don't pass entry-point modifiers
+to `/test-automate`, and don't expect it to set one for the other
+skills to carry forward.
 
 ## Skill level
 
