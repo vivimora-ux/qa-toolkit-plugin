@@ -8,9 +8,10 @@ skill. It also includes a `pr-explainer` skill for reviewing a pull
 request from a testing-risk lens: what changed, what's untested, and
 what's fragile — a `test-plan` skill that turns that analysis into
 a prioritized manual + automated test plan for one PR or feature area —
-and a `test-suite` skill that reads across all of a project's `rs-aut`
+a `test-suite` skill that reads across all of a project's `rs-aut`
 docs to build a full, project-wide test case inventory, for projects
-that don't have one yet.
+that don't have one yet — and a `test-automate` skill that scaffolds
+real, runnable test code for a chosen framework from that inventory.
 
 ## Install
 
@@ -137,7 +138,39 @@ there's a specific change or area in front of you.
   integration).
 
 The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
-modifiers are shared across all four skills.
+modifiers are shared across `rs-aut`, `pr-explainer`, `test-plan`, and
+`test-suite`.
+
+## Usage: automated test scaffolding (`/test-automate`)
+
+Turn the automatable cases from a `test-suite` or `test-plan` doc into
+real, runnable spec files for a chosen framework — the plugin's first
+skill that writes code rather than analysis:
+
+```
+/test-automate
+/test-automate playwright 142
+/test-automate senior webdriverio the checkout flow
+```
+
+- Reads a `docs/test-plan/` doc (PR/area-scoped) or the most recent
+  `docs/test-suite/` doc (project-wide), using the same scope detection
+  as `/test-plan`.
+- Framework choice persists at the project level, not just the session:
+  an explicit argument sets it, otherwise it's read from a prior
+  `/test-automate` run, or defaulted from what `rs-aut` already found in
+  place. It only asks when none of those apply.
+- Only takes cases already marked automatable — `automatable: yes` in a
+  `test-suite` doc, or the "Automated test case suggestions" section of
+  a `test-plan` doc. Manual-only cases are listed as skipped, with a
+  reason, never force-converted.
+- Generated specs go into the project's real test directory (following
+  whatever convention already exists there, or the framework's
+  idiomatic default from `reference/frameworks.md` if none exists yet)
+  — not into a `docs/` analysis file.
+- Only `junior` / `mid` / `senior` apply here, controlling comment
+  density in the generated code. `visual` / `trace` / `risk` don't apply
+  — there's no equivalent framing concept for writing code files.
 
 ## Saving a session to a file
 
@@ -155,6 +188,10 @@ markdown file:
   run.
 - `/test-suite` answers save under `docs/test-suite/`, e.g.
   `docs/test-suite/test-suite_2026-07-28.md`. One file per day, project-wide.
+- `/test-automate` saves a summary doc under `docs/test-automate/`, e.g.
+  `docs/test-automate/test-automate_2026-07-28.md` — listing what was
+  generated and skipped. The actual generated spec files go into the
+  project's real test directory, not `docs/`.
 
 Repeated answers on the same day, for the same topic/PR/branch, update
 that same file rather than creating a new one. Each file leads with the
@@ -178,10 +215,13 @@ aut-onboarding-marketplace/
     │   │   └── SKILL.md
     │   ├── test-plan/
     │   │   └── SKILL.md
-    │   └── test-suite/
+    │   ├── test-suite/
+    │   │   └── SKILL.md
+    │   └── test-automate/
     │       └── SKILL.md
     ├── reference/
-    │   └── modifiers.md   # shared junior/mid/senior + visual/trace/risk behavior
+    │   ├── modifiers.md    # shared junior/mid/senior + visual/trace/risk behavior
+    │   └── frameworks.md   # per-framework conventions for test-automate
     └── README.md   (this file)
 ```
 

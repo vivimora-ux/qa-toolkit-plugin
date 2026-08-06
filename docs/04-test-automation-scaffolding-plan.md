@@ -42,14 +42,11 @@ skill run.
 
 ## Decisions made so far
 
-- **Framework choice is explicit and persists, like skill level.** The
-  person sets it once (or it's defaulted from `rs-aut`'s detected tech
-  stack) and it carries over for the project, the same way skill-level
-  commands persist for a session today. A new command layer
-  (`/playwright`, `/webdriverio`, etc.) is the current leading idea,
-  though this needs review since these commands operate at a different
-  scope (project-persistent) than the existing session-persistent
-  `/junior`/`/visual`-style modifiers — see open questions.
+- **Framework choice is explicit and persists, at the project level, not
+  the session level.** The person sets it once (as an argument, or
+  it's defaulted from `rs-aut`'s detected tech stack) and it carries
+  over for the project. No new command layer — resolved via file-based
+  state instead; see "Open questions / risks" below.
 - **This does not replace `test-suite`.** `test-automate` only ever reads
   a `test-suite` doc (or a `test-plan` doc, for a narrower PR/area-scoped
   automation pass) — it doesn't invent test cases itself.
@@ -125,10 +122,9 @@ qa-toolkit-plugin/
 │   ├── test-suite/
 │   └── test-automate/
 │       └── SKILL.md         # NEW
-├── commands/                # possible new framework-choice commands,
-│                             #  pending the open question below
 ├── reference/
-│   ├── modifiers.md         # unchanged
+│   ├── modifiers.md         # updated — notes test-automate's
+│   │                        #  skill-level-only modifier scope
 │   └── frameworks.md        # NEW — per-framework conventions (file
 │                             #  layout, naming, assertion style) so
 │                             #  generated code matches what a project
@@ -162,10 +158,12 @@ When invoked:
 
 - `/junior` / `/mid` / `/senior` — control comment density and
   explanatory depth in generated code, same mechanism as elsewhere.
+  `/visual` / `/trace` / `/risk` don't apply to this skill — there's no
+  equivalent framing concept for writing code files.
 - Framework choice — persists at the project level (not just the
   session), since switching frameworks mid-project is a much bigger
-  decision than switching explanation depth. Exact command mechanism
-  TBD — see open questions.
+  decision than switching explanation depth. Resolved via the
+  file-based state mechanism in "Open questions / risks" below.
 
 ### File output
 
@@ -181,7 +179,7 @@ When invoked:
 
 ## Acceptance criteria
 
-- [ ] `test-automate/SKILL.md` drafted, correctly reading either a
+- [x] `test-automate/SKILL.md` drafted, correctly reading either a
       `test-suite` or `test-plan` doc as source
 - [ ] Framework detection correctly defaults to what `rs-aut` already
       found in place, for at least one real project
@@ -203,19 +201,24 @@ When invoked:
 
 ## Open questions / risks
 
-- **Framework-choice command mechanism is undecided.** Unlike
-  `/junior`/`/visual`-style modifiers, which reset per session by
-  design, framework choice needs to persist at the project level. Worth
-  deciding during implementation whether this is new commands
-  (`/playwright`, `/webdriverio`), an argument to `/test-automate`
-  itself (`/test-automate playwright`), or something read from a config
-  file in the target project — each has different discoverability and
-  persistence trade-offs.
-  Update: since Claude Code now unifies commands and skills, and
-  `.mcp.json`/plugin config already sets project-level state today, a
-  small config file written by this skill's first run (e.g. under
-  `docs/test-automate/` or a plugin-managed dotfile) may be simpler than
-  new top-level commands — needs a decision, not just a default.
+- **Framework-choice persistence — resolved.** No new commands and no
+  new config-file format. `test-automate` resolves the framework in
+  order: an explicit argument (`/test-automate playwright`) > the most
+  recent `docs/test-automate/test-automate_*.md` file's `Framework:`
+  header line from a prior run > whatever `rs-aut`'s "Technology stack"
+  section already found in place > asking once if none of those apply.
+  This reuses the same dated-markdown-with-header-block mechanism every
+  other skill already uses for state, rather than inventing a new one.
+  See `qa-toolkit-plugin/skills/test-automate/SKILL.md` → "Resolving the
+  framework."
+- **Manual vs. automatable tagging gap — resolved.** `test-plan` docs
+  already separate "Manual test cases" from "Automated test case
+  suggestions," but `test-suite` docs only tagged `priority` and `type`
+  — no automatable/manual signal. Fixed with a small, additive
+  `automatable: yes`/`no` tag added to `test-suite`'s case tagging (see
+  `qa-toolkit-plugin/skills/test-suite/SKILL.md` → "Automatable
+  tagging"), so `test-automate` never has to guess or infer
+  automatability itself.
 - **Code quality and idiom risk.** Generated code that doesn't match a
   team's actual conventions (page-object patterns, fixture setup, naming)
   creates cleanup work instead of saving it. `reference/frameworks.md`

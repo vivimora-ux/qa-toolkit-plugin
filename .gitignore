@@ -1,0 +1,6 @@
+# Ignore the docs directory and everything in it
+docs/
+
+# Ignore a specific file at the root level
+/CLAUDE.md
+/TESTING.md
