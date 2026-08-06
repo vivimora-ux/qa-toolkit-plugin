@@ -1,6 +1,6 @@
 ---
 name: test-plan
-description: Generate a full manual + automated test plan, with automation tooling suggestions, by reading the rs-aut doc(s) already produced. Tip: combine modifiers directly — e.g. /test-plan senior risk the checkout flow. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a feature area (reads docs/onboarding) or blank for the whole project.
+description: Generate a prioritized manual + automated test plan from an existing rs-aut doc. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a feature area, or blank for the whole project.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk] [feature area, or blank for the whole project]"
 ---

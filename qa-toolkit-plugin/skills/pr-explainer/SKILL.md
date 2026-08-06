@@ -1,6 +1,6 @@
 ---
 name: pr-explainer
-description: Review recent changes. Tip: combine modifiers directly — e.g. /pr-explainer junior trace PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
+description: Review a PR or branch diff from a testing-risk lens. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch]"
 ---

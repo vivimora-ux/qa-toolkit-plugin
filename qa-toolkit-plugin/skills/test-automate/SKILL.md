@@ -1,6 +1,6 @@
 ---
 name: test-automate
-description: Turn an existing test-suite or test-plan doc into real, runnable spec files for a chosen automation framework. Tip: combine modifiers directly — e.g. /test-automate senior playwright the checkout flow. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a feature area (reads docs/test-plan or docs/test-suite, whichever covers it) or blank for the most recent docs/test-suite doc.
+description: Scaffold runnable test spec files from an existing test-plan or test-suite doc. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a feature area, or blank for the most recent test-suite doc.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [framework] [feature area, or blank]"
 ---

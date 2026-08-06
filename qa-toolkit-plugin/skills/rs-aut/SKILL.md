@@ -1,6 +1,6 @@
 ---
 name: rs-aut
-description: Understand this project. Tip: combine modifiers directly — e.g. /rs-aut senior visual the checkout flow. Levels: junior/mid/senior. Views: visual/trace/risk.
+description: Build technical understanding of this project. Levels: junior/mid/senior. Views: visual/trace/risk.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk] [what you want to understand]"
 ---

@@ -1,6 +1,6 @@
 ---
 name: test-suite
-description: Generate a full, project-wide test case inventory by reading every rs-aut doc already produced for this project. Tip: combine modifiers directly — e.g. /test-suite senior risk. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: always project-wide (reads all docs/onboarding/rs-aut_*.md files).
+description: Generate a full, project-wide test case inventory from every rs-aut doc produced so far. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: always project-wide.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk]"
 ---
