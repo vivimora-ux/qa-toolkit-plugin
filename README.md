@@ -86,24 +86,22 @@ walk-through, and `risk` leads with the risk assessment.
 
 ## Usage: test plan (`/test-plan`)
 
-Turn a `pr-explainer` or `rs-aut` doc that's already been produced into a
-concrete, prioritized manual + automated test plan — not a fresh
-re-analysis of the PR or project:
+Turn an `rs-aut` doc that's already been produced into a concrete,
+prioritized manual + automated test plan — not a fresh re-analysis of the
+project:
 
 ```
-/test-plan 142
 /test-plan the checkout flow
-/test-plan senior risk PR#42
+/test-plan senior risk the checkout flow
 /test-plan
 ```
 
-- With a PR number/link or no argument on a branch with a diff, it's
-  PR-scoped and reads the matching `docs/pr-explainer/` doc.
-- With a feature/area name, or no argument and no diff, it's
-  project-scoped and reads the matching `docs/onboarding/` doc.
-- If neither doc exists yet, it says so and suggests running
-  `/pr-explainer` or `/rs-aut` first rather than analyzing anything from
-  scratch itself.
+- With a feature/area name, it reads the matching `docs/onboarding/` doc
+  for that area.
+- With no argument, it reads the most recent `docs/onboarding/` doc and
+  scopes the plan to the whole project.
+- If no matching doc exists yet, it says so and suggests running
+  `/rs-aut` first rather than analyzing anything from scratch itself.
 
 Automated test case suggestions default to whatever automation tooling
 `rs-aut`'s doc found already in place for that layer, only deviating when
@@ -112,8 +110,8 @@ tooling flagged as technical debt).
 
 ## Usage: full test-suite inventory (`/test-suite`)
 
-`test-plan` is deliberately narrow: it scopes to one PR or one feature
-area. `test-suite` is the project-wide counterpart — it reads across
+`test-plan` is deliberately narrow: it scopes to one feature area or the
+whole project. `test-suite` is the project-wide counterpart — it reads across
 *all* of a project's `rs-aut` docs (not just one) to build a full,
 exhaustive test case inventory: every manual and automatable test case a
 QA should have written for the whole application. Reach for `test-suite`
@@ -149,13 +147,13 @@ skill that writes code rather than analysis:
 
 ```
 /test-automate
-/test-automate playwright 142
+/test-automate playwright the checkout flow
 /test-automate senior webdriverio the checkout flow
 ```
 
-- Reads a `docs/test-plan/` doc (PR/area-scoped) or the most recent
-  `docs/test-suite/` doc (project-wide), using the same scope detection
-  as `/test-plan`.
+- Reads a `docs/test-plan/` doc (feature/project-scoped) or the most
+  recent `docs/test-suite/` doc (project-wide), preferring `test-plan`
+  when it covers the requested area.
 - Framework choice persists at the project level, not just the session:
   an explicit argument sets it, otherwise it's read from a prior
   `/test-automate` run, or defaulted from what `rs-aut` already found in
@@ -183,9 +181,9 @@ markdown file:
   `docs/pr-explainer/pr-explainer_pr142_2026-07-28.md` (or
   `pr-explainer_<branch>_2026-07-28.md` for a local-diff review).
 - `/test-plan` answers save under `docs/test-plan/`, e.g.
-  `docs/test-plan/test-plan_pr142_2026-07-28.md` for a PR-scoped run, or
-  `docs/test-plan/test-plan_2026-07-28.md` for a project/feature-scoped
-  run.
+  `docs/test-plan/test-plan_2026-07-28.md` — one file per day, covering
+  whichever feature area(s) or whole-project scope were asked about that
+  day.
 - `/test-suite` answers save under `docs/test-suite/`, e.g.
   `docs/test-suite/test-suite_2026-07-28.md`. One file per day, project-wide.
 - `/test-automate` saves a summary doc under `docs/test-automate/`, e.g.
