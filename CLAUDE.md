@@ -57,10 +57,11 @@ paraphrased copy will drift out of sync with the real spec.
   argument the skill accepts, `disable-model-invocation: true`, and an
   `argument-hint` showing the accepted argument order.
 - **Non-invention rule**: every skill after the first in the pipeline
-  (`rs-aut` → `pr-explainer`/`test-suite` → `test-plan` → `test-automate`)
-  treats its predecessor's doc as already-decided fact. If that doc doesn't
-  exist yet, say so plainly and suggest running the missing skill — never
-  analyze or invent the missing layer yourself.
+  (`rs-aut` → `test-suite`/`test-plan` → `test-automate`, with
+  `pr-explainer` a standalone `rs-aut`-fed PR reviewer that doesn't feed
+  `test-plan`) treats its predecessor's doc as already-decided fact. If
+  that doc doesn't exist yet, say so plainly and suggest running the
+  missing skill — never analyze or invent the missing layer yourself.
 - **Dated output files**: every skill run writes a markdown file under the
   target project's `docs/<skill>/<skill>_<identifier>_<date>.md`, leading
   with a header block (creation date, commands used) and updating that same

@@ -1,8 +1,8 @@
 ---
 name: test-plan
-description: Generate a full manual + automated test plan, with automation tooling suggestions, by reading the docs pr-explainer/rs-aut already produced. Tip: combine modifiers directly — e.g. /test-plan senior risk PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link/branch (reads docs/pr-explainer), a feature area (reads docs/onboarding), or blank for the current branch.
+description: Generate a full manual + automated test plan, with automation tooling suggestions, by reading the rs-aut doc(s) already produced. Tip: combine modifiers directly — e.g. /test-plan senior risk the checkout flow. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a feature area (reads docs/onboarding) or blank for the whole project.
 disable-model-invocation: true
-argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, feature area, or blank for current branch]"
+argument-hint: "[junior|mid|senior] [visual|trace|risk] [feature area, or blank for the whole project]"
 ---
 
 You help a QA or QE team member turn analysis that's already been done into
@@ -12,39 +12,32 @@ testing, not a fresh re-analysis of the PR or project.
 
 ## Determining scope
 
-1. If an argument looks like a PR number (`123`, `#123`), a GitHub PR URL, or
-   there's no argument but the current branch has a diff against the repo's
-   default branch, this run is PR-scoped. Expect a matching file under
-   `docs/pr-explainer/`.
-2. If an argument names a feature or area (e.g. "the checkout flow"), or
-   there's no argument and no PR diff either, this run is project-scoped.
-   Expect a matching file under `docs/onboarding/`.
-3. If both apply — a PR that touches an area `rs-aut` has already covered —
-   read both docs and combine them: the onboarding doc gives system context,
-   the pr-explainer doc gives the specific change.
-4. Don't guess a doc's location. Look for the exact filename convention each
-   skill uses (`pr-explainer_<identifier>_<date>.md`,
-   `rs-aut_<date>.md`) and use the most recent relevant match.
+1. If an argument names a feature or area (e.g. "the checkout flow"), look
+   for a matching `docs/onboarding/` doc covering that area.
+2. If no argument is given, use the most recent `docs/onboarding/` doc —
+   this scopes the plan to the whole project.
+3. Don't guess a doc's location. Look for the exact filename convention
+   `rs-aut` uses (`rs-aut_<date>.md`) and use the most recent relevant
+   match.
+4. If no matching `docs/onboarding/` doc exists at all, say so plainly and
+   suggest running `/rs-aut` first. Stop there — don't analyze the project
+   from scratch yourself to fill the gap.
 
 ## Reading the source docs
 
-Pull only the testing-relevant sections out of whichever doc(s) apply:
+Pull only the testing-relevant sections out of the `rs-aut` doc: **Testing
+strategy**, **Flow automation requirements**, and **Technology stack** —
+specifically the primary languages/frameworks, existing test automation
+tools/frameworks, and known technical debt or fragile dependencies bullets.
 
-- From a `pr-explainer` doc: **Test coverage** and **Risk assessment**.
-- From an `rs-aut` doc: **Testing strategy**, **Flow automation
-  requirements**, and **Technology stack** — specifically the primary
-  languages/frameworks, existing test automation tools/frameworks, and known
-  technical debt or fragile dependencies bullets.
+Treat these sections as already-established fact — don't re-explore the
+project to double-check them. That analysis is `rs-aut`'s job, not this
+skill's.
 
-Treat these sections as already-established fact — don't re-read the diff or
-re-explore the project to double-check them. That analysis is `pr-explainer`
-and `rs-aut`'s job, not this skill's.
-
-If the doc this run needs doesn't exist yet (no `docs/pr-explainer/` file
-matching the PR/branch, or no `docs/onboarding/` file at all), say so
-plainly and suggest running `/pr-explainer` or `/rs-aut` first, whichever is
-missing. Stop there — don't invoke the other skill yourself, and don't fall
-back to analyzing the diff or project from scratch to fill the gap.
+If the doc this run needs doesn't exist yet (no `docs/onboarding/` file
+matching the area, or none at all), say so plainly and suggest running
+`/rs-aut` first. Stop there — don't invoke it yourself, and don't fall
+back to analyzing the project from scratch to fill the gap.
 
 ## Building the test plan
 
@@ -77,9 +70,6 @@ doesn't apply to manual test cases.
   name the reason from the doc, not a generic opinion about the tool (e.g.
   "rs-aut flagged the existing Selenium setup as outdated," not "Selenium is
   old").
-- If this run has no `rs-aut` doc to draw from (PR-scoped only, no
-  onboarding doc read), say so plainly and skip technology suggestions
-  rather than guessing the stack from the repo directly.
 
 ## Session modifiers
 
@@ -133,17 +123,15 @@ request.
 
 - **Location** — `docs/test-plan/` at the root of the project being tested
   (not this plugin). Create the folder if it doesn't exist yet.
-- **Filename** — PR-scoped runs use
-  `test-plan_<identifier>_<YYYY-MM-DD>.md`, using today's actual date and the
-  same `pr<number>` / sanitized-branch-name identifier convention
-  `pr-explainer` uses. Project/feature-scoped runs (no PR involved) use
-  `test-plan_<YYYY-MM-DD>.md`, matching `rs-aut`'s single-file-per-day
-  convention. If that file already exists for the day/scope, update it in
-  place rather than creating a second file.
+- **Filename** — `test-plan_<YYYY-MM-DD>.md`, using today's actual date,
+  matching `rs-aut`'s single-file-per-day convention. If that file already
+  exists for the day, update it in place rather than creating a second
+  file — when multiple feature areas are covered the same day, they're
+  separate sections within this one file, not separate files.
 - **Required header block** — at the top of the file, before any other
   content:
   - The creation date, written out plainly (e.g. `Created: 2026-07-28`).
-  - The source doc path(s) this plan was built from.
+  - The source `rs-aut` doc path(s) this plan was built from.
   - A "Commands used" section listing the full command transcript so far, in
     order as actually typed — every `/test-plan` invocation verbatim,
     including whatever modifier and scope arguments were given. Render each
@@ -152,9 +140,10 @@ request.
 - **Body** — the test plan content covered so far, organized under clear
   markdown headers (manual cases, automated case suggestions with their
   technology suggestion alongside each one, grouped by component/area when
-  `visual` applies), so it scans well in an editor like VS Code rather than
-  reading like a chat transcript. When a later answer covers a case already
-  in the file, update it rather than duplicating it.
+  `visual` applies or when multiple feature areas were covered the same
+  day), so it scans well in an editor like VS Code rather than reading like
+  a chat transcript. When a later answer covers a case already in the
+  file, update it rather than duplicating it.
 - After writing or updating the file, mention the path in your reply so the
   person knows it's there — but don't ask permission first, and don't make
   the write conditional on them wanting it.

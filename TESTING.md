@@ -22,9 +22,9 @@ three of them (see below).
 
 - **5 skills**: `/rs-aut [modifiers] [topic]`,
   `/pr-explainer [modifiers] [PR#|URL|blank]`,
-  `/test-plan [modifiers] [PR#|URL|feature area|blank]`,
+  `/test-plan [modifiers] [feature area|blank]`,
   `/test-suite [modifiers]`,
-  `/test-automate [junior|mid|senior] [framework] [PR#|URL|feature area|blank]`
+  `/test-automate [junior|mid|senior] [framework] [feature area|blank]`
 - **6 modifier arguments**, shared across the first four skills, in effect
   for the rest of the session once set. `test-automate` only uses skill
   level (depth), never entry point (framing) — see Test 18:
@@ -144,17 +144,15 @@ After a few runs on the same day:
 
 Run each in its own session, against the target project:
 
-- `/test-plan <PR#>` (with a matching `docs/pr-explainer/` doc already
-  on disk from Test 5/6) — should read that doc and produce a
-  PR-scoped plan, without re-reading the diff itself.
 - `/test-plan <feature area>` (with a matching `docs/onboarding/` doc
-  already on disk from Test 1) — should read that doc and produce a
-  project-scoped plan.
-- `/test-plan <PR#>` where **no** matching `docs/pr-explainer/` doc
-  exists yet — should say so plainly and suggest running
-  `/pr-explainer` first, not analyze the diff itself to fill the gap.
+  already on disk from Test 1) — should read that doc and produce an
+  area-scoped plan, without re-exploring the project itself.
+- `/test-plan` with no argument (with a `docs/onboarding/` doc already on
+  disk) — should read the most recent doc and produce a whole-project-
+  scoped plan.
 - `/test-plan <feature area>` where **no** `docs/onboarding/` doc
-  exists yet — should say so plainly and suggest `/rs-aut` first.
+  exists yet — should say so plainly and suggest `/rs-aut` first, not
+  analyze the project itself to fill the gap.
 
 ## Test 9 — Modifiers carry over to `/test-plan`, and tech suggestions
 
@@ -162,7 +160,7 @@ In the same session as Test 3/4 (don't reset), without resetting the
 modifiers:
 
 ```
-/test-plan <PR#>
+/test-plan <feature area>
 ```
 
 Expect it still applies `senior`/`risk` from earlier, confirming
@@ -173,17 +171,13 @@ modifiers are shared across all three skills. Also confirm:
   Playwright already in place → suggests Playwright, not Cypress),
   and only suggest something different when the doc gave an explicit
   reason (no tooling yet, or tooling flagged as technical debt).
-- If this run had no `rs-aut` doc to draw from (PR-scoped only), it
-  says so and skips technology suggestions rather than guessing the
-  stack directly.
 
 ## Test 10 — `/test-plan` file output
 
 After a run or two on the same day:
 
-- Confirm `docs/test-plan/test-plan_pr<PR#>_<today's date>.md` (or
-  `test-plan_<today's date>.md` for a project-scoped run) exists in the
-  *target* project, with a header block (`Created:`, source doc
+- Confirm `docs/test-plan/test-plan_<today's date>.md` exists in the
+  *target* project, with a header block (`Created:`, source `rs-aut` doc
   path(s), `Commands used:`).
 - Run a second `/test-plan` later the same day on the same scope —
   confirm it **updates** the existing file rather than duplicating it.
@@ -321,8 +315,8 @@ subsequent runs.
 - [ ] Modifiers persist across the session and across all four skills
 - [ ] `/pr-explainer` handles: PR number, PR URL, blank/local diff,
       no-`gh`, nothing-to-review
-- [ ] `/test-plan` correctly detects PR-scoped vs. project-scoped runs,
-      and refuses to guess when the source doc is missing
+- [ ] `/test-plan` correctly detects feature-area vs. whole-project runs,
+      and refuses to guess when the source `rs-aut` doc is missing
 - [ ] `/test-plan` technology suggestions match what `rs-aut` found in
       place, deviating only with a stated reason
 - [ ] `/test-suite` refuses to invent coverage when no `rs-aut` doc

@@ -1,8 +1,8 @@
 ---
 name: test-automate
-description: Turn an existing test-suite or test-plan doc into real, runnable spec files for a chosen automation framework. Tip: combine modifiers directly — e.g. /test-automate senior playwright PR#42. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a PR number/link/branch (reads docs/test-plan), a feature area (reads docs/test-suite), or blank for the current branch/most recent test-suite doc.
+description: Turn an existing test-suite or test-plan doc into real, runnable spec files for a chosen automation framework. Tip: combine modifiers directly — e.g. /test-automate senior playwright the checkout flow. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a feature area (reads docs/test-plan or docs/test-suite, whichever covers it) or blank for the most recent docs/test-suite doc.
 disable-model-invocation: true
-argument-hint: "[junior|mid|senior] [framework] [PR#, link, feature area, or blank]"
+argument-hint: "[junior|mid|senior] [framework] [feature area, or blank]"
 ---
 
 You help a QA or QE team member turn test cases that already exist on
@@ -14,19 +14,15 @@ already written down in a `test-suite` or `test-plan` doc.
 
 ## Determining scope
 
-Same detection `test-plan` uses for its own source docs:
-
-1. If an argument looks like a PR number (`123`, `#123`), a GitHub PR
-   URL, or there's no argument but the current branch has a diff against
-   the repo's default branch, this run is PR-scoped. Expect a matching
-   file under `docs/test-plan/`.
-2. If an argument names a feature or area, or there's no argument and no
-   PR diff either, this run is project-scoped. Expect the most recent
-   file under `docs/test-suite/` (not just today's — the latest one that
-   exists).
+1. If an argument names a feature or area, prefer a matching
+   `docs/test-plan/` doc covering that area — it's already prioritized.
+   If `test-plan` doesn't cover that area, fall back to `docs/test-suite/`.
+2. If no argument is given, use the most recent file under
+   `docs/test-suite/` (not just today's — the latest one that exists) —
+   this is the project-wide default.
 3. Don't guess a doc's location. Use the exact filename convention each
-   skill uses (`test-plan_<identifier>_<date>.md`,
-   `test-suite_<date>.md`) and the most recent relevant match.
+   skill uses (`test-plan_<date>.md`, `test-suite_<date>.md`) and the
+   most recent relevant match.
 4. If the doc this run needs doesn't exist yet, say so plainly and
    suggest running `/test-plan` or `/test-suite` first, whichever is
    missing. Stop there — don't analyze the project or diff yourself to
