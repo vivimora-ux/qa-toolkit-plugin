@@ -97,22 +97,24 @@ file.
 
 ## Generating specs via Agent fan-out
 
-For each target-file group, spawn one agent (in parallel across groups —
-never two agents assigned to the same file) with:
+For each target-file group, call the Agent tool with
+`subagent_type: test-spec-writer` — one call per group, all in parallel
+(single message, multiple tool calls), never two calls assigned to the same
+file. Send each call:
 
 - That file's assigned cases (case text, priority, type).
 - The exact target file path, and whether it's a new file or an
   existing one being appended to.
-- The relevant framework section from `reference/frameworks.md`.
+- The resolved framework name (not the framework section itself —
+  `test-spec-writer` looks that up in `reference/frameworks.md` on its own).
+- The source doc's path (for its traceability comments).
 - The comment-density instruction for the current skill level (see
   Session modifiers below).
-- A requirement to add a traceability comment above each generated test,
-  linking it back to its source case and the source doc's path (see the
-  example skeletons in `reference/frameworks.md`).
-- An instruction that if a case turns out not to sensibly automate once
-  actually writing it (e.g. it needs something no locator/assertion can
-  express), it should skip that one case and report why, rather than
-  writing code that doesn't actually test the case.
+
+`agents/test-spec-writer.md` owns the actual generation rules (framework
+conventions, traceability comments, comment density, generation-time skip
+handling) — this skill doesn't restate them, only supplies the per-file
+inputs above.
 
 Each agent writes its file directly and reports back: which cases it
 covered, and any case it couldn't automate after all (a generation-time
@@ -137,13 +139,9 @@ this or an earlier `/rs-aut`, `/pr-explainer`, `/test-plan`,
 reuse it without asking again. If none has been set yet, default to
 `mid`.
 
-- **`junior`** — inline comment on most non-trivial assertions,
-  explaining what's being checked and why, not just restating the
-  assertion.
-- **`mid`** — default; comment only assertions or setup steps that
-  aren't obvious from the code itself.
-- **`senior`** — comment-light; only the required traceability comment,
-  otherwise idiomatic code with no explanatory comments.
+Pass the resolved level to every `test-spec-writer` call in this run —
+what each level means for comment density is `test-spec-writer`'s own
+concern (see `agents/test-spec-writer.md`), not restated here.
 
 ## Non-goals, every run
 
