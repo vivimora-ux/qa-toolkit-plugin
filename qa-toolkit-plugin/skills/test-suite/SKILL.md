@@ -83,15 +83,65 @@ either dimension.
 
 ### Automatable tagging
 
-Tag each case `automatable: yes` or `automatable: no`. A case is `no`
+Tag each case's `Automatable` column `Yes` or `No`. A case is `No`
 when it inherently needs human judgment to evaluate — visual inspection,
 a subjective UX call, open-ended exploratory investigation — rather than
-a deterministic pass/fail a script could assert. Default to `yes` unless
-the case actually requires that kind of judgment; don't mark a case `no`
+a deterministic pass/fail a script could assert. Default to `Yes` unless
+the case actually requires that kind of judgment; don't mark a case `No`
 just because automating it would be more work. This tag exists so a
 downstream skill (`test-automate`) can tell which cases in this inventory
 are candidates for generated test code without re-deriving that judgment
 itself.
+
+## Recording each case
+
+The sections above decide each case's priority, type, and automatable
+value. This section defines the concrete format those values (and
+everything else about the case) get recorded in.
+
+- **Case ID** — `TC_<Module>_<NNN>`: the module/feature-area name
+  (sanitized to a safe heading fragment) plus a zero-padded 3-digit
+  sequence number scoped to that module, e.g. `TC_Checkout_001`. Assign
+  an ID once and never renumber it on a later run. A new case added to a
+  module already on disk gets the next unused sequence number for that
+  module, not a restart from 001.
+- **Per-group summary table** — one per grouping unit (a module by
+  default; see Session modifiers for how `trace` changes the grouping),
+  with columns `ID | Title | Priority | Type | Automatable | Status`.
+- **Per-case detail block** — immediately below its group's summary
+  table, one `####` heading per case (`<ID> — <Title>`), followed by:
+  - **Objective** — what the case verifies and why it matters.
+  - **Preconditions** — state required before the case can run.
+  - **Test data** — concrete input values the case uses.
+  - **Steps** — a real numbered list of actions, not packed into a table
+    cell.
+  - **Expected result** — what should happen.
+  - **Actual result** — leave blank; a tester fills this in during
+    execution.
+  - **Status** — `Not Run`; a tester updates this during execution.
+  - **Comments** — leave blank; a tester fills this in during execution
+    (bug IDs, screenshot links, etc.).
+
+## Handling missing detail
+
+`rs-aut` docs describe architecture and data flow, not UI-level
+interaction steps. When a case's Preconditions, Test data, or Steps
+aren't actually derivable from the source doc(s), write that plainly in
+the field itself (e.g. "Not specified in rs-aut doc — needs definition")
+rather than inventing a plausible-sounding step. This is the same
+non-invention rule the rest of this skill follows, applied at the
+field level instead of the case level.
+
+## Execution fields and rerun safety
+
+Actual result, Status, and Comments are the only fields a tester, not
+this skill, ever writes meaningfully — this skill plans and inventories,
+it never executes a test. When a later `/test-suite` run updates a case
+that's already on disk (matched by its Case ID), touch only the planning
+fields (Objective, Preconditions, Test data, Steps, Expected result).
+Never overwrite a non-default value already present in Actual result,
+Status, or Comments — a tester's execution notes must survive a rerun
+that's only there to add or refine other cases.
 
 This skill shares its session modifiers with `rs-aut`, `pr-explainer`,
 and `test-plan`. Check whether a skill-level (`junior`/`mid`/`senior`)
@@ -107,17 +157,22 @@ If no entry point has been set yet, default to plain priority order
 For this skill specifically:
 
 - **`visual`** — group the inventory by module/component first, then by
-  priority within each group.
+  priority within each group. This is the default grouping the
+  per-module summary tables in "Recording each case" already use.
 - **`trace`** — order cases along real user/data flows end to end,
-  rather than by module.
+  rather than by module. The summary-table-plus-detail-block structure
+  stays the same; the grouping unit becomes a flow instead of a module,
+  so headers read "### Checkout flow" instead of "### Checkout module."
 - **`risk`** — this is already the default ordering; under this
   modifier, also state briefly why each top area is highest-risk (same
   pattern as `test-plan`).
 - **`junior`** — include more rationale per case, explaining why each
-  one matters and what could go wrong if it's skipped.
-- **`mid`** — default; brief rationale, only where it's not obvious.
-- **`senior`** — compress rationale to only the non-obvious cases;
-  otherwise just the case itself.
+  one matters and what could go wrong if it's skipped. This rationale
+  lives in the case's **Objective** bullet.
+- **`mid`** — default; brief rationale in **Objective**, only where it's
+  not obvious.
+- **`senior`** — compress **Objective** to only the non-obvious cases;
+  otherwise just what the case verifies.
 
 ## Baseline rules
 
@@ -178,15 +233,19 @@ someone has to request.
     no `rs-aut` doc yet, so the file is honest about partial coverage
     even if nobody reads past the header.
 - **Body** — the inventory organized under clear markdown headers,
-  grouped by module (or by flow, under `visual`/`trace`), each case
-  tagged with priority, type, and automatable, so it scans well in an
-  editor like VS Code rather than reading like a chat transcript. Use real
-  `##`/`###` headers, not bolded prose. When a later answer covers a
-  case or module already in the file, update that section rather than
-  duplicating it. Updating in place doesn't require re-reading the
-  whole existing file first — append the new or updated section
-  directly, checking existing headers only if you're unsure whether a
-  section is already there.
+  grouped by module (or by flow, under `trace`) using real `##`/`###`
+  headers, not bolded prose. Each group starts with its summary table
+  (`ID | Title | Priority | Type | Automatable | Status`), followed by
+  one `####` detail block per case, per "Recording each case" above —
+  so it scans well in an editor like VS Code rather than reading like a
+  chat transcript. When a later answer covers a case or module already
+  in the file, update that case's ID and planning fields in place rather
+  than duplicating it — and never overwrite an already-filled Actual
+  result, Status, or Comments value, per "Execution fields and rerun
+  safety" above. Updating in place doesn't require re-reading the whole
+  existing file first — append the new or updated section directly,
+  checking existing headers only if you're unsure whether a section is
+  already there.
 - After writing or updating the file, mention the path in your reply so
   the person knows it's there — but don't ask permission first, and
   don't make the write conditional on them wanting it.
