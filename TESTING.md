@@ -14,8 +14,8 @@ three of them (see below).
 - In that project, install the plugin from inside Claude Code:
 
 ```
-/plugin marketplace add vivimora-ux/aut-onboarding-marketplace
-/plugin install qa-toolkit@aut-onboarding-marketplace
+/plugin marketplace add vivimora-ux/qa-toolkit-plugin
+/plugin install qa-toolkit@qa-toolkit-plugin
 ```
 
 ## What you're testing
