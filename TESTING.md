@@ -22,9 +22,9 @@ three of them (see below).
 
 - **5 skills**: `/rs-aut [modifiers] [topic]`,
   `/pr-explainer [modifiers] [PR#|URL|blank]`,
-  `/test-plan [modifiers] [PR#|URL|feature area|blank]`,
+  `/test-plan [modifiers] [feature area|blank]`,
   `/test-suite [modifiers]`,
-  `/test-automate [junior|mid|senior] [framework] [PR#|URL|feature area|blank]`
+  `/test-automate [junior|mid|senior] [framework] [feature area|blank]`
 - **6 modifier arguments**, shared across the first four skills, in effect
   for the rest of the session once set. `test-automate` only uses skill
   level (depth), never entry point (framing) — see Test 18:
@@ -144,17 +144,15 @@ After a few runs on the same day:
 
 Run each in its own session, against the target project:
 
-- `/test-plan <PR#>` (with a matching `docs/pr-explainer/` doc already
-  on disk from Test 5/6) — should read that doc and produce a
-  PR-scoped plan, without re-reading the diff itself.
 - `/test-plan <feature area>` (with a matching `docs/onboarding/` doc
-  already on disk from Test 1) — should read that doc and produce a
-  project-scoped plan.
-- `/test-plan <PR#>` where **no** matching `docs/pr-explainer/` doc
-  exists yet — should say so plainly and suggest running
-  `/pr-explainer` first, not analyze the diff itself to fill the gap.
+  already on disk from Test 1) — should read that doc and produce an
+  area-scoped plan, without re-exploring the project itself.
+- `/test-plan` with no argument (with a `docs/onboarding/` doc already on
+  disk) — should read the most recent doc and produce a whole-project-
+  scoped plan.
 - `/test-plan <feature area>` where **no** `docs/onboarding/` doc
-  exists yet — should say so plainly and suggest `/rs-aut` first.
+  exists yet — should say so plainly and suggest `/rs-aut` first, not
+  analyze the project itself to fill the gap.
 
 ## Test 9 — Modifiers carry over to `/test-plan`, and tech suggestions
 
@@ -162,7 +160,7 @@ In the same session as Test 3/4 (don't reset), without resetting the
 modifiers:
 
 ```
-/test-plan <PR#>
+/test-plan <feature area>
 ```
 
 Expect it still applies `senior`/`risk` from earlier, confirming
@@ -173,17 +171,13 @@ modifiers are shared across all three skills. Also confirm:
   Playwright already in place → suggests Playwright, not Cypress),
   and only suggest something different when the doc gave an explicit
   reason (no tooling yet, or tooling flagged as technical debt).
-- If this run had no `rs-aut` doc to draw from (PR-scoped only), it
-  says so and skips technology suggestions rather than guessing the
-  stack directly.
 
 ## Test 10 — `/test-plan` file output
 
 After a run or two on the same day:
 
-- Confirm `docs/test-plan/test-plan_pr<PR#>_<today's date>.md` (or
-  `test-plan_<today's date>.md` for a project-scoped run) exists in the
-  *target* project, with a header block (`Created:`, source doc
+- Confirm `docs/test-plan/test-plan_<today's date>.md` exists in the
+  *target* project, with a header block (`Created:`, source `rs-aut` doc
   path(s), `Commands used:`).
 - Run a second `/test-plan` later the same day on the same scope —
   confirm it **updates** the existing file rather than duplicating it.
@@ -216,9 +210,14 @@ Expect:
   recent one.
 - A gap-disclosure note near the top, naming any of the seven `rs-aut`
   topics (or feature areas) with no onboarding doc yet.
-- Every case tagged with both a priority (highest-risk first, traced to
-  something an `rs-aut` doc actually flagged) and a type (functional /
-  edge / negative / integration).
+- Each module has a summary table with `ID | Title | Priority | Type |
+  Automatable | Status` columns — priority highest-risk-first, traced to
+  something an `rs-aut` doc actually flagged, type one of functional /
+  edge / negative / integration.
+- Below each summary table, a `####` detail block per case (matching its
+  ID) with Objective, Preconditions, Test data, numbered Steps, and
+  Expected result — plus blank/`Not Run` Actual result, Status, and
+  Comments placeholders.
 
 ## Test 13 — Modifiers carry over to `/test-suite`
 
@@ -234,8 +233,10 @@ modifiers are shared across all four skills. Also check the
 `visual`/`trace` variants specifically:
 
 - `/test-suite visual` — groups the inventory by module/component first.
-- `/test-suite trace` — orders cases along a real user/data flow,
-  end to end, rather than by module.
+- `/test-suite trace` — orders cases along a real user/data flow, end to
+  end, rather than by module — confirm the same summary-table-plus-
+  detail-block shape is used, just grouped by flow (e.g. "### Checkout
+  flow") instead of by module.
 
 ## Test 14 — `/test-suite` file output
 
@@ -245,7 +246,12 @@ After a run or two on the same day:
   *target* project, with a header block (`Created:`, the source `rs-aut`
   doc path(s) actually read, `Commands used:`, and a `Coverage gaps` note).
 - Run a second `/test-suite` later the same day — confirm it **updates**
-  the existing file rather than duplicating it.
+  the existing file rather than duplicating it, and that every case's ID
+  stays the same as before (no renumbering).
+- Manually edit one case's Status/Actual result/Comments cells in the
+  file (as if a tester ran it), then run `/test-suite` again the same
+  day on an unrelated area — confirm your manual edits are still there
+  afterward, untouched.
 
 ## Test 15 — `/test-automate` with no source doc
 
@@ -287,9 +293,9 @@ subsequent runs.
 
 ## Test 17 — Automatable filtering and skipped-case reporting
 
-- Against a `docs/test-suite/` doc: confirm only `automatable: yes`
-  cases are turned into specs, and every `automatable: no` case appears
-  in the skipped-cases report with its reason.
+- Against a `docs/test-suite/` doc: confirm only cases with
+  `Automatable: Yes` are turned into specs, and every `Automatable: No`
+  case appears in the skipped-cases report with its reason.
 - Against a `docs/test-plan/` doc: confirm only cases under "Automated
   test case suggestions" are turned into specs, and cases that only
   appear under "Manual test cases" are reported as skipped, not
@@ -321,14 +327,15 @@ subsequent runs.
 - [ ] Modifiers persist across the session and across all four skills
 - [ ] `/pr-explainer` handles: PR number, PR URL, blank/local diff,
       no-`gh`, nothing-to-review
-- [ ] `/test-plan` correctly detects PR-scoped vs. project-scoped runs,
-      and refuses to guess when the source doc is missing
+- [ ] `/test-plan` correctly detects feature-area vs. whole-project runs,
+      and refuses to guess when the source `rs-aut` doc is missing
 - [ ] `/test-plan` technology suggestions match what `rs-aut` found in
       place, deviating only with a stated reason
 - [ ] `/test-suite` refuses to invent coverage when no `rs-aut` doc
       exists, and discloses gaps plainly when docs are only partial
 - [ ] `/test-suite` correctly combines multiple `rs-aut` docs, and every
-      case carries a priority, a type, and an automatable tag
+      case has a stable ID, a summary-table row (priority, type,
+      automatable, status), and a matching detail block
 - [ ] `/test-automate` refuses to generate anything when no source doc
       exists, and never invents a test case not in that doc
 - [ ] `/test-automate` framework resolution follows the right order:

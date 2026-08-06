@@ -1,8 +1,8 @@
 ---
 name: test-automate
-description: Turn an existing test-suite or test-plan doc into real, runnable spec files for a chosen automation framework. Tip: combine modifiers directly — e.g. /test-automate senior playwright PR#42. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a PR number/link/branch (reads docs/test-plan), a feature area (reads docs/test-suite), or blank for the current branch/most recent test-suite doc.
+description: Scaffold runnable test spec files from an existing test-plan or test-suite doc. Levels: junior/mid/senior (comment density only — no visual/trace/risk). Scope: a feature area, or blank for the most recent test-suite doc.
 disable-model-invocation: true
-argument-hint: "[junior|mid|senior] [framework] [PR#, link, feature area, or blank]"
+argument-hint: "[junior|mid|senior] [framework] [feature area, or blank]"
 ---
 
 You help a QA or QE team member turn test cases that already exist on
@@ -14,19 +14,15 @@ already written down in a `test-suite` or `test-plan` doc.
 
 ## Determining scope
 
-Same detection `test-plan` uses for its own source docs:
-
-1. If an argument looks like a PR number (`123`, `#123`), a GitHub PR
-   URL, or there's no argument but the current branch has a diff against
-   the repo's default branch, this run is PR-scoped. Expect a matching
-   file under `docs/test-plan/`.
-2. If an argument names a feature or area, or there's no argument and no
-   PR diff either, this run is project-scoped. Expect the most recent
-   file under `docs/test-suite/` (not just today's — the latest one that
-   exists).
+1. If an argument names a feature or area, prefer a matching
+   `docs/test-plan/` doc covering that area — it's already prioritized.
+   If `test-plan` doesn't cover that area, fall back to `docs/test-suite/`.
+2. If no argument is given, use the most recent file under
+   `docs/test-suite/` (not just today's — the latest one that exists) —
+   this is the project-wide default.
 3. Don't guess a doc's location. Use the exact filename convention each
-   skill uses (`test-plan_<identifier>_<date>.md`,
-   `test-suite_<date>.md`) and the most recent relevant match.
+   skill uses (`test-plan_<date>.md`, `test-suite_<date>.md`) and the
+   most recent relevant match.
 4. If the doc this run needs doesn't exist yet, say so plainly and
    suggest running `/test-plan` or `/test-suite` first, whichever is
    missing. Stop there — don't analyze the project or diff yourself to
@@ -62,17 +58,18 @@ generating code with invented conventions.
 
 ## Identifying automatable cases
 
-- From a `docs/test-suite/` doc: use the `automatable` tag each case
-  already carries. Take only `automatable: yes` cases; list every
-  `automatable: no` case in the skipped report with its stated reason.
+- From a `docs/test-suite/` doc: read the `Automatable` column
+  (`Yes`/`No`) in each case's summary table row. Take only `Yes` cases;
+  list every `No` case in the skipped report with its stated reason.
 - From a `docs/test-plan/` doc: use its "Automated test case
   suggestions" section directly — cases that only appear under "Manual
   test cases" are manual-only and go in the skipped report, not treated
   as candidates.
 - Never invent automatability the source doc didn't state. If a source
-  doc predates the `automatable` tag (an older `test-suite` file) and
-  doesn't carry it, say so plainly and ask whether to treat all its
-  cases as candidates or skip that doc's cases entirely — don't guess.
+  doc predates this column-based format (an older `test-suite` file) and
+  has no `Automatable` column, say so plainly and ask whether to treat
+  all its cases as candidates or skip that doc's cases entirely — don't
+  guess.
 
 ## Grouping cases by target spec file
 
@@ -102,7 +99,10 @@ For each target-file group, call the Agent tool with
 (single message, multiple tool calls), never two calls assigned to the same
 file. Send each call:
 
-- That file's assigned cases (case text, priority, type).
+- That file's assigned cases (their full detail block — objective,
+  preconditions, test data, steps, expected result — plus priority and
+  type; for a `test-plan` source, whatever detail that doc's "Automated
+  test case suggestions" entry gives).
 - The exact target file path, and whether it's a new file or an
   existing one being appended to.
 - The resolved framework name (not the framework section itself —
@@ -123,7 +123,7 @@ skip, distinct from the pre-filtered skips above).
 ## Reporting
 
 Combine both skip sources into one list — cases excluded before
-generation (`automatable: no` / manual-only) and cases skipped during
+generation (`Automatable: No` / manual-only) and cases skipped during
 generation — each with its reason. Never merge them silently or drop
 either source.
 

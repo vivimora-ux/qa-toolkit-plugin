@@ -86,24 +86,22 @@ walk-through, and `risk` leads with the risk assessment.
 
 ## Usage: test plan (`/test-plan`)
 
-Turn a `pr-explainer` or `rs-aut` doc that's already been produced into a
-concrete, prioritized manual + automated test plan — not a fresh
-re-analysis of the PR or project:
+Turn an `rs-aut` doc that's already been produced into a concrete,
+prioritized manual + automated test plan — not a fresh re-analysis of the
+project:
 
 ```
-/test-plan 142
 /test-plan the checkout flow
-/test-plan senior risk PR#42
+/test-plan senior risk the checkout flow
 /test-plan
 ```
 
-- With a PR number/link or no argument on a branch with a diff, it's
-  PR-scoped and reads the matching `docs/pr-explainer/` doc.
-- With a feature/area name, or no argument and no diff, it's
-  project-scoped and reads the matching `docs/onboarding/` doc.
-- If neither doc exists yet, it says so and suggests running
-  `/pr-explainer` or `/rs-aut` first rather than analyzing anything from
-  scratch itself.
+- With a feature/area name, it reads the matching `docs/onboarding/` doc
+  for that area.
+- With no argument, it reads the most recent `docs/onboarding/` doc and
+  scopes the plan to the whole project.
+- If no matching doc exists yet, it says so and suggests running
+  `/rs-aut` first rather than analyzing anything from scratch itself.
 
 Automated test case suggestions default to whatever automation tooling
 `rs-aut`'s doc found already in place for that layer, only deviating when
@@ -112,8 +110,8 @@ tooling flagged as technical debt).
 
 ## Usage: full test-suite inventory (`/test-suite`)
 
-`test-plan` is deliberately narrow: it scopes to one PR or one feature
-area. `test-suite` is the project-wide counterpart — it reads across
+`test-plan` is deliberately narrow: it scopes to one feature area or the
+whole project. `test-suite` is the project-wide counterpart — it reads across
 *all* of a project's `rs-aut` docs (not just one) to build a full,
 exhaustive test case inventory: every manual and automatable test case a
 QA should have written for the whole application. Reach for `test-suite`
@@ -133,9 +131,15 @@ there's a specific change or area in front of you.
   `/rs-aut` first, rather than analyzing the project from scratch itself.
 - Names explicitly which feature areas or topics have no `rs-aut` coverage
   yet, so the inventory is honest about what's partial.
-- Every case is tagged with a priority (highest-risk first, traced back to
-  what `rs-aut` actually flagged) and a type (functional / edge / negative /
-  integration).
+- Each case gets a stable ID (`TC_<Module>_<NNN>`, e.g. `TC_Checkout_001`)
+  and a row in its module's summary table (`ID | Title | Priority | Type |
+  Automatable | Status`), with priority highest-risk-first traced back to
+  what `rs-aut` actually flagged.
+- Below each summary table, every case gets a detail block — objective,
+  preconditions, test data, numbered steps, and expected result. Actual
+  result, status, and comments start blank/`Not Run` for a tester to fill
+  in during execution, and a later `/test-suite` rerun never overwrites
+  those once a tester has filled them in.
 
 The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
 modifiers are shared across `rs-aut`, `pr-explainer`, `test-plan`, and
@@ -149,18 +153,18 @@ skill that writes code rather than analysis:
 
 ```
 /test-automate
-/test-automate playwright 142
+/test-automate playwright the checkout flow
 /test-automate senior webdriverio the checkout flow
 ```
 
-- Reads a `docs/test-plan/` doc (PR/area-scoped) or the most recent
-  `docs/test-suite/` doc (project-wide), using the same scope detection
-  as `/test-plan`.
+- Reads a `docs/test-plan/` doc (feature/project-scoped) or the most
+  recent `docs/test-suite/` doc (project-wide), preferring `test-plan`
+  when it covers the requested area.
 - Framework choice persists at the project level, not just the session:
   an explicit argument sets it, otherwise it's read from a prior
   `/test-automate` run, or defaulted from what `rs-aut` already found in
   place. It only asks when none of those apply.
-- Only takes cases already marked automatable — `automatable: yes` in a
+- Only takes cases already marked automatable — `Automatable: Yes` in a
   `test-suite` doc, or the "Automated test case suggestions" section of
   a `test-plan` doc. Manual-only cases are listed as skipped, with a
   reason, never force-converted.
@@ -183,9 +187,9 @@ markdown file:
   `docs/pr-explainer/pr-explainer_pr142_2026-07-28.md` (or
   `pr-explainer_<branch>_2026-07-28.md` for a local-diff review).
 - `/test-plan` answers save under `docs/test-plan/`, e.g.
-  `docs/test-plan/test-plan_pr142_2026-07-28.md` for a PR-scoped run, or
-  `docs/test-plan/test-plan_2026-07-28.md` for a project/feature-scoped
-  run.
+  `docs/test-plan/test-plan_2026-07-28.md` — one file per day, covering
+  whichever feature area(s) or whole-project scope were asked about that
+  day.
 - `/test-suite` answers save under `docs/test-suite/`, e.g.
   `docs/test-suite/test-suite_2026-07-28.md`. One file per day, project-wide.
 - `/test-automate` saves a summary doc under `docs/test-automate/`, e.g.

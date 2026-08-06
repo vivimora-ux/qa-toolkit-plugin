@@ -1,6 +1,6 @@
 ---
 name: pr-explainer
-description: Review recent changes. Tip: combine modifiers directly — e.g. /pr-explainer junior trace PR#42. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
+description: Review a PR or branch diff from a testing-risk lens. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
 disable-model-invocation: true
 argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch]"
 ---
@@ -107,9 +107,10 @@ onto a trivial change.
    broken here before (if that's in loaded project knowledge), and what
    edge case is easiest to miss. Under `risk`, lead with this.
 6. **Suggested test plan** — for a full prioritized manual and
-   automated test plan, run `/test-plan` (it reads this file for the
-   test coverage and risk context above). Mention this pointer rather
-   than generating detailed test cases here.
+   automated test plan covering the feature/area this PR touches, run
+   `/test-plan <area>` (it builds from the project's `rs-aut`
+   understanding of that area, not from this review). Mention this
+   pointer rather than generating detailed test cases here.
 7. **Non-functional considerations** — performance, security,
    data/schema/migration impact, rollback safety, and backwards
    compatibility, where relevant to this specific change.
