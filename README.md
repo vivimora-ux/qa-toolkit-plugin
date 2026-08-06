@@ -131,9 +131,15 @@ there's a specific change or area in front of you.
   `/rs-aut` first, rather than analyzing the project from scratch itself.
 - Names explicitly which feature areas or topics have no `rs-aut` coverage
   yet, so the inventory is honest about what's partial.
-- Every case is tagged with a priority (highest-risk first, traced back to
-  what `rs-aut` actually flagged) and a type (functional / edge / negative /
-  integration).
+- Each case gets a stable ID (`TC_<Module>_<NNN>`, e.g. `TC_Checkout_001`)
+  and a row in its module's summary table (`ID | Title | Priority | Type |
+  Automatable | Status`), with priority highest-risk-first traced back to
+  what `rs-aut` actually flagged.
+- Below each summary table, every case gets a detail block — objective,
+  preconditions, test data, numbered steps, and expected result. Actual
+  result, status, and comments start blank/`Not Run` for a tester to fill
+  in during execution, and a later `/test-suite` rerun never overwrites
+  those once a tester has filled them in.
 
 The same `junior` / `mid` / `senior` and `visual` / `trace` / `risk`
 modifiers are shared across `rs-aut`, `pr-explainer`, `test-plan`, and
@@ -158,7 +164,7 @@ skill that writes code rather than analysis:
   an explicit argument sets it, otherwise it's read from a prior
   `/test-automate` run, or defaulted from what `rs-aut` already found in
   place. It only asks when none of those apply.
-- Only takes cases already marked automatable — `automatable: yes` in a
+- Only takes cases already marked automatable — `Automatable: Yes` in a
   `test-suite` doc, or the "Automated test case suggestions" section of
   a `test-plan` doc. Manual-only cases are listed as skipped, with a
   reason, never force-converted.

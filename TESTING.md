@@ -210,9 +210,14 @@ Expect:
   recent one.
 - A gap-disclosure note near the top, naming any of the seven `rs-aut`
   topics (or feature areas) with no onboarding doc yet.
-- Every case tagged with both a priority (highest-risk first, traced to
-  something an `rs-aut` doc actually flagged) and a type (functional /
-  edge / negative / integration).
+- Each module has a summary table with `ID | Title | Priority | Type |
+  Automatable | Status` columns — priority highest-risk-first, traced to
+  something an `rs-aut` doc actually flagged, type one of functional /
+  edge / negative / integration.
+- Below each summary table, a `####` detail block per case (matching its
+  ID) with Objective, Preconditions, Test data, numbered Steps, and
+  Expected result — plus blank/`Not Run` Actual result, Status, and
+  Comments placeholders.
 
 ## Test 13 — Modifiers carry over to `/test-suite`
 
@@ -228,8 +233,10 @@ modifiers are shared across all four skills. Also check the
 `visual`/`trace` variants specifically:
 
 - `/test-suite visual` — groups the inventory by module/component first.
-- `/test-suite trace` — orders cases along a real user/data flow,
-  end to end, rather than by module.
+- `/test-suite trace` — orders cases along a real user/data flow, end to
+  end, rather than by module — confirm the same summary-table-plus-
+  detail-block shape is used, just grouped by flow (e.g. "### Checkout
+  flow") instead of by module.
 
 ## Test 14 — `/test-suite` file output
 
@@ -239,7 +246,12 @@ After a run or two on the same day:
   *target* project, with a header block (`Created:`, the source `rs-aut`
   doc path(s) actually read, `Commands used:`, and a `Coverage gaps` note).
 - Run a second `/test-suite` later the same day — confirm it **updates**
-  the existing file rather than duplicating it.
+  the existing file rather than duplicating it, and that every case's ID
+  stays the same as before (no renumbering).
+- Manually edit one case's Status/Actual result/Comments cells in the
+  file (as if a tester ran it), then run `/test-suite` again the same
+  day on an unrelated area — confirm your manual edits are still there
+  afterward, untouched.
 
 ## Test 15 — `/test-automate` with no source doc
 
@@ -281,9 +293,9 @@ subsequent runs.
 
 ## Test 17 — Automatable filtering and skipped-case reporting
 
-- Against a `docs/test-suite/` doc: confirm only `automatable: yes`
-  cases are turned into specs, and every `automatable: no` case appears
-  in the skipped-cases report with its reason.
+- Against a `docs/test-suite/` doc: confirm only cases with
+  `Automatable: Yes` are turned into specs, and every `Automatable: No`
+  case appears in the skipped-cases report with its reason.
 - Against a `docs/test-plan/` doc: confirm only cases under "Automated
   test case suggestions" are turned into specs, and cases that only
   appear under "Manual test cases" are reported as skipped, not
@@ -322,7 +334,8 @@ subsequent runs.
 - [ ] `/test-suite` refuses to invent coverage when no `rs-aut` doc
       exists, and discloses gaps plainly when docs are only partial
 - [ ] `/test-suite` correctly combines multiple `rs-aut` docs, and every
-      case carries a priority, a type, and an automatable tag
+      case has a stable ID, a summary-table row (priority, type,
+      automatable, status), and a matching detail block
 - [ ] `/test-automate` refuses to generate anything when no source doc
       exists, and never invents a test case not in that doc
 - [ ] `/test-automate` framework resolution follows the right order:

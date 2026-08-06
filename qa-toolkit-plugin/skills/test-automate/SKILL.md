@@ -58,17 +58,18 @@ generating code with invented conventions.
 
 ## Identifying automatable cases
 
-- From a `docs/test-suite/` doc: use the `automatable` tag each case
-  already carries. Take only `automatable: yes` cases; list every
-  `automatable: no` case in the skipped report with its stated reason.
+- From a `docs/test-suite/` doc: read the `Automatable` column
+  (`Yes`/`No`) in each case's summary table row. Take only `Yes` cases;
+  list every `No` case in the skipped report with its stated reason.
 - From a `docs/test-plan/` doc: use its "Automated test case
   suggestions" section directly — cases that only appear under "Manual
   test cases" are manual-only and go in the skipped report, not treated
   as candidates.
 - Never invent automatability the source doc didn't state. If a source
-  doc predates the `automatable` tag (an older `test-suite` file) and
-  doesn't carry it, say so plainly and ask whether to treat all its
-  cases as candidates or skip that doc's cases entirely — don't guess.
+  doc predates this column-based format (an older `test-suite` file) and
+  has no `Automatable` column, say so plainly and ask whether to treat
+  all its cases as candidates or skip that doc's cases entirely — don't
+  guess.
 
 ## Grouping cases by target spec file
 
@@ -98,7 +99,10 @@ For each target-file group, call the Agent tool with
 (single message, multiple tool calls), never two calls assigned to the same
 file. Send each call:
 
-- That file's assigned cases (case text, priority, type).
+- That file's assigned cases (their full detail block — objective,
+  preconditions, test data, steps, expected result — plus priority and
+  type; for a `test-plan` source, whatever detail that doc's "Automated
+  test case suggestions" entry gives).
 - The exact target file path, and whether it's a new file or an
   existing one being appended to.
 - The resolved framework name (not the framework section itself —
@@ -119,7 +123,7 @@ skip, distinct from the pre-filtered skips above).
 ## Reporting
 
 Combine both skip sources into one list — cases excluded before
-generation (`automatable: no` / manual-only) and cases skipped during
+generation (`Automatable: No` / manual-only) and cases skipped during
 generation — each with its reason. Never merge them silently or drop
 either source.
 
