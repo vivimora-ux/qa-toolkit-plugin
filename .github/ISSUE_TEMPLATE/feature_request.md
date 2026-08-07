@@ -1,6 +1,6 @@
 ---
 name: 🤖 Feature Request
-about: Suggest a new command or improvement for the Discord bot
+about: Suggest a new command or improvement
 title: "[Feature Request] "
 labels: enhancement
 assignees: ""
@@ -30,7 +30,7 @@ Why do you want this? What problem does it solve, or how does it enhance the bot
 
 ---
 
-## 🧪 Related bots or examples?
+## 🧪 Related examples?
 
 (Optional) Have you seen something similar in another bot? Drop a name, screenshot, or example here.
 
