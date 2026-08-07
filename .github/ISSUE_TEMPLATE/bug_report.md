@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug Report
-about: Report a bug or unexpected behavior with the Discord bot
+about: Report a bug or unexpected behavior.
 title: "[Bug] "
 labels: bug
 assignees: ""
@@ -31,17 +31,16 @@ For example:
 
 ---
 
-## 🧾 Bot Response (if any)
+## 🧾 Response (if any)
 
-Paste the bot’s reply, error message, or log output (if available).
+Paste the reply, error message, or log output (if available).
 
 ---
 
 ## 💻 Environment
 
-- **Bot Version:** (e.g., v2.1.3)
+- **Version:** (e.g., v2.1.3)
 - **Hosting:** [ ] Self-hosted / [ ] Cloud / [ ] Other: \_\_\_
-- **Discord Server Type:** [ ] Private / [ ] Community / [ ] Test Server
 - **Permissions/roles involved:** (if relevant)
 
 ---
