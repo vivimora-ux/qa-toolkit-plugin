@@ -206,7 +206,7 @@ VS Code instead of scrolling back through the terminal.
 ## Repo layout
 
 ```
-aut-onboarding-marketplace/
+qa-toolkit-plugin/
 ├── .claude-plugin/
 │   └── marketplace.json
 └── qa-toolkit-plugin/
