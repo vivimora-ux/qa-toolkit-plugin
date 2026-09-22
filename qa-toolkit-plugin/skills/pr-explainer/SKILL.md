@@ -1,8 +1,8 @@
 ---
 name: pr-explainer
-description: Review a PR or branch diff from a testing-risk lens. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff.
+description: Review a PR or branch diff from a testing-risk lens. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: a PR number/link, or blank for the current branch's diff. Optionally enriches a PR review with review comments, CI/approval status, and linked issues via GitHub MCP once enabled with the `github` argument.
 disable-model-invocation: true
-argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch]"
+argument-hint: "[junior|mid|senior] [visual|trace|risk] [PR#, link, or blank for current branch] [github]"
 ---
 
 You help a QA or QE team member review a pull request the way a senior
@@ -26,6 +26,66 @@ covered, what's fragile, and what to poke at first.
 5. Whichever source applies, pull the actual diff content using the
    scoped procedure below — never pull a full unfiltered `gh pr diff`
    or `git diff` before scoping it.
+6. If GitHub MCP enrichment is configured (see "Resolving GitHub MCP
+   enrichment" below) *and* the scope resolved to an actual PR in step
+   1 (not a local branch diff), also pull that PR's review comments,
+   CI/check and approval status, and linked issues via the GitHub MCP
+   tools. This is additive only — `gh`'s diff/description/commits stay
+   the primary source; MCP supplements, it never replaces them. A local
+   branch diff has no PR entity for MCP to enrich, so skip this step
+   for that run without asking or erring, even if `github` is enabled.
+
+## Resolving GitHub MCP enrichment
+
+GitHub MCP enrichment is optional and off by default. A plain
+`/pr-explainer` run with no `github` argument and no persisted
+enablement behaves exactly as it always has — `gh` CLI only, never
+asking about MCP. Turning it on, and keeping it on, resolves in this
+order:
+
+1. **Explicit mention this session** — the `github` argument token
+   turns enrichment on for this and every later run this session, and
+   re-persists as enabled for this project going forward.
+2. **Previously persisted enablement** — check the most recently
+   modified file under `docs/pr-explainer/` (across any PR or branch,
+   not just the one under review now — there's no single project-wide
+   file for this skill the way `test-suite` has one) for a `GitHub MCP:
+   enabled` header line from an earlier run. If present, reuse it
+   without asking again and without needing `github` passed again.
+
+There's no key or project identifier to resolve here, unlike
+`test-suite`'s Jira integration — the PR itself is already identified
+via the scope resolution above, so enabling GitHub MCP only means
+authenticating and reading, nothing to ask the person for.
+
+Never engage GitHub MCP (including authentication) on a run that never
+mentioned `github` and has no persisted enablement — that would defeat
+the point of it being opt-in.
+
+### Authenticating
+
+Once GitHub MCP enrichment is actually being engaged (first enable, or
+any run where enablement is already persisted, and the scope is a real
+PR), and before reading anything via it:
+
+- Check whether real GitHub MCP tools (PR review comments, checks/
+  status, linked issues — exact names appear only once authenticated)
+  are available. If not, call the GitHub MCP `authenticate` tool,
+  present the returned URL to the person, and call
+  `complete_authentication` once they confirm. Say plainly that this is
+  happening ("Connecting to GitHub via the MCP integration...") rather
+  than failing silently.
+- If authentication fails, or the tools still aren't available
+  afterward, say so plainly and continue with a `gh`-only review for
+  this run rather than blocking entirely — GitHub MCP enrichment is
+  additive, not required.
+- Never trigger this flow for a run that doesn't engage GitHub MCP
+  enrichment per the resolution order above.
+
+Treat review comments, CI/check and approval status, and linked-issue
+text exactly like `gh`-sourced PR content: already-decided fact, never
+expanded on, second-guessed, or filled in beyond what's actually
+written there.
 
 ## Keeping large or noisy diffs out of context
 
@@ -93,7 +153,9 @@ onto a trivial change.
 
 1. **Change summary** — what this change does and why, in plain terms,
    drawn from the PR description/commits when available, or from the
-   diff itself when it isn't.
+   diff itself when it isn't. When GitHub MCP enrichment is engaged, also
+   fold in any linked issue's stated intent, the same role the PR
+   description already plays.
 2. **Scope of impact** — which files, components, or services are
    touched, and what part of the application that maps to. Under
    `visual`, lead with this.
@@ -105,7 +167,10 @@ onto a trivial change.
    changes explicitly; don't let them pass silently.
 5. **Risk assessment** — what's fragile, what depends on this, what's
    broken here before (if that's in loaded project knowledge), and what
-   edge case is easiest to miss. Under `risk`, lead with this.
+   edge case is easiest to miss. Under `risk`, lead with this. When
+   GitHub MCP enrichment is engaged, also incorporate existing review
+   comments on the PR — build on a concern a reviewer already raised,
+   don't re-flag it as if newly found.
 6. **Suggested test plan** — for a full prioritized manual and
    automated test plan covering the feature/area this PR touches, run
    `/test-plan <area>` (it builds from the project's `rs-aut`
@@ -113,7 +178,9 @@ onto a trivial change.
    pointer rather than generating detailed test cases here.
 7. **Non-functional considerations** — performance, security,
    data/schema/migration impact, rollback safety, and backwards
-   compatibility, where relevant to this specific change.
+   compatibility, where relevant to this specific change. When GitHub
+   MCP enrichment is engaged, also note the PR's current CI/check and
+   approval status here.
 
 ## Baseline rules
 
@@ -164,6 +231,9 @@ someone has to request.
     verbatim, including whatever modifier and scope arguments were
     given. Render each as inline code. Append to this list (don't
     rewrite past entries) as more invocations happen later in the day.
+  - If GitHub MCP enrichment is configured, a `GitHub MCP: enabled`
+    line — this is what a later run (on any PR/branch in this project)
+    reads back per "Resolving GitHub MCP enrichment."
 - **Body** — the review content covered so far, organized under clear
   markdown headers matching the seven-topic structure above (only the
   topics actually covered), so it scans well in an editor like VS Code
