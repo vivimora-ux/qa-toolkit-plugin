@@ -84,6 +84,19 @@ modifiers from above apply here too — `visual` leads with the
 files/components touched, `trace` leads with a step-by-step code
 walk-through, and `risk` leads with the risk assessment.
 
+Optionally, enrich a PR review with data `gh` can't provide — review
+comments, CI/approval status, and linked issues — via GitHub MCP:
+
+```
+/pr-explainer 142 github
+```
+
+Off by default; `gh` stays the primary source either way, MCP only
+supplements it. The first `github` run authenticates and persists the
+setting for the project, so later runs don't need the argument again.
+Only applies when reviewing an actual PR — a local branch diff has no
+PR entity for MCP to enrich.
+
 ## Usage: test plan (`/test-plan`)
 
 Turn an `rs-aut` doc that's already been produced into a concrete,
@@ -185,13 +198,20 @@ markdown file:
   being onboarded, e.g. `docs/onboarding/rs-aut_2026-07-28.md`.
 - `/pr-explainer` answers save under `docs/pr-explainer/`, e.g.
   `docs/pr-explainer/pr-explainer_pr142_2026-07-28.md` (or
-  `pr-explainer_<branch>_2026-07-28.md` for a local-diff review).
+  `pr-explainer_<branch>_2026-07-28.md` for a local-diff review). When
+  GitHub MCP enrichment is configured, the header also records a
+  `GitHub MCP: enabled` line — optional, present only once it's
+  actually in use.
 - `/test-plan` answers save under `docs/test-plan/`, e.g.
   `docs/test-plan/test-plan_2026-07-28.md` — one file per day, covering
   whichever feature area(s) or whole-project scope were asked about that
   day.
 - `/test-suite` answers save under `docs/test-suite/`, e.g.
-  `docs/test-suite/test-suite_2026-07-28.md`. One file per day, project-wide.
+  `docs/test-suite/test-suite_2026-07-28.md`. One file per day,
+  project-wide. When Jira integration is configured, the header also
+  records a `Jira project:` key and, once a tracking issue has been
+  created, a `Jira tracking issue:` key — both optional, present only
+  once Jira is actually in use.
 - `/test-automate` saves a summary doc under `docs/test-automate/`, e.g.
   `docs/test-automate/test-automate_2026-07-28.md` — listing what was
   generated and skipped. The actual generated spec files go into the

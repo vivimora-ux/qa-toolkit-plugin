@@ -1,8 +1,8 @@
 ---
 name: test-suite
-description: Generate a full, project-wide test case inventory from every rs-aut doc produced so far. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: always project-wide.
+description: Generate a full, project-wide test case inventory from every rs-aut doc produced so far, optionally enriched with Jira requirements and able to push a single tracking-issue summary back to Jira once a project or epic key is configured. Levels: junior/mid/senior. Views: visual/trace/risk. Scope: always project-wide.
 disable-model-invocation: true
-argument-hint: "[junior|mid|senior] [visual|trace|risk]"
+argument-hint: "[junior|mid|senior] [visual|trace|risk] [jira [PROJECT-KEY]]"
 ---
 
 You help a QA or QE team member turn all the project understanding
@@ -35,6 +35,67 @@ is a separate, later phase.
    fact. Don't re-explore the project or re-verify architecture, data
    flow, or testing strategy — that analysis is `rs-aut`'s job, not this
    skill's.
+4. If Jira integration is configured (see "Resolving Jira integration"
+   below), also pull functional requirements and acceptance criteria for
+   the configured project or epic using the Atlassian Rovo MCP tools.
+   This is an additional source alongside the `rs-aut` doc(s), never a
+   replacement — `rs-aut` docs are still required for this skill to run
+   at all (step 2 above still applies unchanged). `rs-aut` supplies
+   architecture and data-flow facts; Jira supplies functional
+   requirements and acceptance criteria. Where both exist for the same
+   area, the inventory draws on both.
+5. Treat Jira issue description and acceptance-criteria text exactly
+   like `rs-aut` doc content: already-decided fact, never expanded on,
+   second-guessed, or filled in beyond what's actually written there.
+
+## Resolving Jira integration
+
+Jira integration is optional and off by default. A plain `/test-suite`
+run with no `jira` argument and no persisted key behaves exactly as it
+always has — reading only `rs-aut` docs, never asking about Jira.
+Turning it on, and keeping it on, resolves in this order:
+
+1. **Explicit mention this session** — the `jira` argument token
+   (optionally followed by a project or epic key, e.g. `/test-suite jira
+   PROJ` or `/test-suite jira PROJ-123`) turns integration on for this
+   and every later run this session, and re-persists as the project's
+   configured key going forward. A bare `jira` token with no key falls
+   through to step 3 to resolve the key itself.
+2. **Previously persisted key** — look at the most recent
+   `docs/test-suite/test-suite_*.md` file's header for a `Jira project:`
+   line from an earlier run. If present, Jira integration is already on;
+   reuse the key without asking again and without needing `jira` passed
+   again.
+3. **Ask once, then persist** — if `jira` was passed (this run or
+   earlier) but no key is set anywhere, ask which Jira project or epic
+   key to use, then persist the answer in this run's file header so
+   future runs don't ask again.
+
+There's no "detected" tier here, unlike `test-automate`'s framework
+resolution — nothing earlier in this pipeline surfaces a Jira key, so
+resolution goes straight from explicit/persisted to asking.
+
+Never ask about Jira on a run that never mentioned `jira` and has no
+persisted key — that would defeat the point of it being opt-in.
+
+### Authenticating
+
+Once Jira integration is actually being engaged (first enable, or any
+run where a key is already persisted), and before reading or writing
+anything in Jira:
+
+- Check whether real Jira tools (issue search/get/comment/create — exact
+  names appear only once authenticated) are available. If not, call the
+  Atlassian Rovo MCP `authenticate` tool, present the returned URL to
+  the person, and call `complete_authentication` once they confirm. Say
+  plainly that this is happening ("Connecting to Jira via the Atlassian
+  Rovo integration...") rather than failing silently.
+- If authentication fails, or the tools still aren't available
+  afterward, say so plainly and continue with an rs-aut-only inventory
+  for this run rather than blocking entirely — Jira is additive, not
+  required.
+- Never trigger this flow for a run that doesn't engage Jira integration
+  per the resolution order above.
 
 ## Identifying coverage gaps
 
@@ -46,6 +107,12 @@ explicitly which feature areas or topics have no onboarding doc yet, so
 the person knows up front where the inventory is partial rather than
 discovering it later. Do this once, near the top of the answer, not
 scattered through the inventory.
+
+When Jira integration is configured, also flag: a module with `rs-aut`
+architecture coverage but no matching Jira requirement, and a Jira
+requirement with no matching `rs-aut` architecture context. Same
+non-invention rule as above — say so plainly rather than filling in
+either side to match the other.
 
 ## Building the inventory
 
@@ -206,6 +273,36 @@ new modifier, rather than re-reading the source docs from scratch. Only
 re-read a source doc if there's actual reason to think it changed (e.g.
 a new `/rs-aut` run happened in between).
 
+## Writing test cases back to Jira
+
+Writing to Jira is opt-in only — unlike the automatic local markdown
+write below, it never happens unless the person explicitly asks for it
+in that session (e.g. "push this to Jira", "sync this to Jira"), and
+only once a Jira project or epic key is configured. If asked to push
+before any key is configured, resolve one first (ask once, per
+"Resolving Jira integration") rather than refusing outright.
+
+When asked, create a single summary tracking issue in the configured
+project — never one issue or sub-task per test case. The local file's
+Status/Actual result/Comments fields, and their rerun-safety rules in
+"Execution fields and rerun safety" above, are the one place execution
+status lives; a per-case tracking surface in Jira would compete with
+that as a second source of truth.
+
+The tracking issue contains:
+
+- The case counts and breakdown (by module or flow, and by
+  priority/type) the inventory already computed.
+- A link back to the local `docs/test-suite/test-suite_<date>.md` file
+  for the full detail.
+
+Follow the same one-per-day convention as the local file: if a tracking
+issue was already created today (its key is recorded in the local
+file's header — see below), update that same issue in place rather than
+creating a second one. Persist the created or updated issue's key in
+the local file's header immediately, so a later run — or a later ask —
+the same day finds it instead of duplicating it.
+
 ## Always writing the result to a file
 
 Every time you answer using this skill, also write (or update) a
@@ -232,6 +329,13 @@ someone has to request.
   - A brief "Coverage gaps" note listing any feature area or topic with
     no `rs-aut` doc yet, so the file is honest about partial coverage
     even if nobody reads past the header.
+  - If Jira integration is configured, a `Jira project:` line recording
+    the resolved project or epic key — this is what a later run reads
+    back per "Resolving Jira integration."
+  - If a Jira tracking issue has been created for this file (see
+    "Writing test cases back to Jira"), a `Jira tracking issue:` line
+    recording its key, so a same-day rerun updates it instead of
+    duplicating it.
 - **Body** — the inventory organized under clear markdown headers,
   grouped by module (or by flow, under `trace`) using real `##`/`###`
   headers, not bolded prose. Each group starts with its summary table

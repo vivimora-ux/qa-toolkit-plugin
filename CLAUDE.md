@@ -68,6 +68,28 @@ paraphrased copy will drift out of sync with the real spec.
   file in place on same-day reruns rather than duplicating it. See
   `README.md` → "Saving a session to a file" for the exact per-skill naming.
 
+## `pr-explainer`: the one skill with optional GitHub MCP enrichment
+
+`pr-explainer` can optionally enrich a PR review with data the `gh` CLI
+doesn't provide — review comments, CI/check and approval status, and
+linked issues — via GitHub MCP. `gh` stays the primary source either
+way; MCP only supplements it, folded into the existing seven-topic
+structure (linked issues into change summary, review comments into risk
+assessment, CI/approval status into non-functional considerations),
+never a separate section of its own.
+
+Off by default, and never proactively asked about — it turns on only
+via an explicit `github` argument to `/pr-explainer`, after which
+enablement persists across future runs on any PR/branch in that project
+the same way `test-suite`'s Jira integration persists its project key.
+Unlike Jira, there's no key or project to resolve: the PR is already
+identified through this skill's own scope resolution, so enabling
+GitHub MCP only means authenticating once and reading — never a
+separate opt-in write step, since this skill has no write-back
+concept.
+
+Full behavior: `qa-toolkit-plugin/skills/pr-explainer/SKILL.md`.
+
 ## `test-automate`: the one skill that writes code
 
 `test-automate` is the plugin's only skill that produces real files outside
@@ -98,6 +120,27 @@ agent work in this repo, and it carries a correspondingly stricter process:
   its current contents as final.
 
 Full behavior: `qa-toolkit-plugin/skills/test-automate/SKILL.md`.
+
+## `test-suite`: the one skill with an optional Jira integration
+
+`test-suite` can optionally read from and write to Jira via the
+already-installed Atlassian Rovo MCP server. This is unrelated to the
+shared skill-level/entry-point modifier system above — it's about
+*where source material comes from* (Jira requirements and acceptance
+criteria, always alongside required `rs-aut` docs, never replacing
+them) and *where output can optionally be pushed* (a single summary
+tracking issue, only when explicitly asked), not about how
+already-gathered content gets framed.
+
+Jira integration is off by default and never proactively asked about —
+it turns on only via an explicit `jira` argument to `/test-suite`,
+after which the resolved project/epic key persists across future runs
+the same way `test-automate`'s `Framework:` header does. Writing to
+Jira is separately opt-in every time: it requires an explicit ask in
+the session and never happens automatically, unlike this skill's
+standing local markdown write.
+
+Full behavior: `qa-toolkit-plugin/skills/test-suite/SKILL.md`.
 
 ## Verifying changes
 
